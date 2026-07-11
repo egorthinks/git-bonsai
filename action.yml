@@ -1,0 +1,25 @@
+name: 'git-bonsai'
+description: 'Grow a deterministic 16-bit pixel-art bonsai from your GitHub history and commit it for your profile README'
+author: 'Egor Fedorov'
+branding:
+  icon: 'git-branch'
+  color: 'green'
+inputs:
+  github-token:
+    description: 'Token used for the GitHub GraphQL API and for pushing the images'
+    default: ${{ github.token }}
+  user:
+    description: 'GitHub login to grow a bonsai for (defaults to the repository owner)'
+    default: ''
+  output-dir:
+    description: 'Directory (inside the repo) to write bonsai.svg / bonsai.gif / bonsai-growth.gif'
+    default: 'output'
+  commit:
+    description: 'Commit and push the generated files ("true"/"false")'
+    default: 'true'
+  commit-message:
+    description: 'Commit message for the daily re-run'
+    default: 'chore: tend the bonsai 🌳'
+runs:
+  using: 'node20'
+  main: 'dist/src/action.js'

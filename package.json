@@ -1,0 +1,25 @@
+{
+  "name": "git-bonsai",
+  "version": "0.1.0",
+  "description": "Deterministic procedural pixel-art bonsai grown from your GitHub history",
+  "license": "MIT",
+  "repository": "github:egorthinks/git-bonsai",
+  "keywords": ["github-action", "pixel-art", "procedural-generation", "bonsai", "profile-readme"],
+  "main": "dist/src/index.js",
+  "bin": {
+    "git-bonsai": "dist/src/cli.js"
+  },
+  "files": ["dist/src", "action.yml", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "demo": "npm run build && node dist/src/cli.js --fixture fixtures/veteran.json --out out"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "@types/node": "^20.14.0"
+  }
+}

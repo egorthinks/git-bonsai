@@ -1,0 +1,6 @@
+# dist/ is committed on purpose: the GitHub Action runs straight from dist
+# without an install step (the project has zero runtime dependencies).
+node_modules/
+out/
+output/
+*.tsbuildinfo
