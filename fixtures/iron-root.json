@@ -1,0 +1,90 @@
+{
+  "username": "iron-root",
+  "createdAt": "2010-02-10T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 68000,
+  "topLanguages": [
+    {
+      "name": "Python",
+      "ratio": 0.8
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Python"
+    },
+    {
+      "epoch": 1,
+      "lang": "Python"
+    },
+    {
+      "epoch": 2,
+      "lang": "Python"
+    }
+  ],
+  "currentStreak": 60,
+  "maxStreak": 420,
+  "longestGapDays": 800,
+  "gapsOver60d": 2,
+  "weekendRatio": 0.22,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 0.9,
+  "burstiness": 0.28,
+  "repoCount": 20,
+  "topRepoShare": 0.3,
+  "flagshipCount": 1
+}

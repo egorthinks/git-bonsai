@@ -52,6 +52,36 @@ test('outputs fit README budgets', () => {
   assert.ok(out.png.subarray(1, 4).toString('ascii') === 'PNG');
 });
 
+test('repo concentration earns the multi-trunk styles', () => {
+  const style = (name: string) =>
+    generate(loadFixture(path.join(FIXTURES, name + '.json'))).dna;
+  assert.strictEqual(style('twin-keeper').style, 'sokan');
+  assert.strictEqual(style('twin-keeper').trunks.length, 2);
+  assert.strictEqual(style('clump-forge').style, 'kabudachi');
+  assert.ok(style('clump-forge').trunks.length >= 3);
+  assert.strictEqual(style('monolith-mike').style, 'sekijoju');
+  assert.ok(style('monolith-mike').rock);
+  assert.strictEqual(style('acme-org').style, 'yose-ue');
+  assert.ok(style('acme-org').trunks.length >= 5);
+  // size classes: a young account sits in a small pot
+  assert.strictEqual(style('tiny-sprout').sizeClass, 'shohin');
+  assert.strictEqual(generate(veteran()).dna.sizeClass, 'dai');
+});
+
+test('seasons shift the leaves deterministically, keeping hue identity', () => {
+  const summerA = generate(veteran(), { season: 'summer' });
+  const summerB = generate(veteran(), { season: 'summer' });
+  assert.ok(summerA.png.equals(summerB.png), 'same season must be bit-identical');
+  for (const season of ['spring', 'autumn', 'winter'] as const) {
+    const other = generate(veteran(), { season });
+    assert.ok(!other.png.equals(summerA.png), `${season} should differ from summer`);
+  }
+  // identity: the TypeScript-blue top ramp keeps blue dominant in autumn
+  const { seasonize } = require('../src/palette');
+  const [r, g, b] = seasonize([92, 180, 221], 'autumn');
+  assert.ok(b > r, 'autumn must not turn a blue crown warm-brown');
+});
+
 test('runs fast enough for a CI budget', () => {
   const started = Date.now();
   generate(veteran());

@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SPECIES = exports.LANG_RAMPS = exports.PALETTE_SIZE = exports.LEAF_E = exports.FLOWER = exports.SOIL = exports.POT = exports.DEAD = exports.TRUNK = exports.OUTLINE = exports.TRANSPARENT = void 0;
 exports.rampFor = rampFor;
+exports.seasonize = seasonize;
+exports.seasonFromDate = seasonFromDate;
 exports.speciesFor = speciesFor;
 exports.buildPalette = buildPalette;
 /**
@@ -44,20 +46,155 @@ exports.LANG_RAMPS = {
     Astro: ['#7a2e10', '#ab4a16', '#d8701f', '#f7a03f'],
     'Jupyter Notebook': ['#14524d', '#1e7a6f', '#2fa392', '#57ccb6'],
 };
+/**
+ * Long-tail languages get their ramp derived from one anchor color (the hue
+ * GitHub linguist uses for the language), on the same lightness ladder as the
+ * hand-tuned ramps above.
+ */
+const LANG_ANCHORS = {
+    Vue: '#41b883',
+    Svelte: '#ff3e00',
+    Dart: '#00b4ab',
+    Scala: '#c22d40',
+    Elixir: '#7e5a9e',
+    Erlang: '#b83998',
+    Haskell: '#5e5086',
+    OCaml: '#ef7a08',
+    Clojure: '#db5855',
+    Lua: '#3a3aa0',
+    Perl: '#0298c3',
+    R: '#198ce7',
+    Julia: '#a270ba',
+    Zig: '#ec915c',
+    Assembly: '#8a5a1a',
+    Dockerfile: '#4a6a78',
+    Makefile: '#427819',
+    Nix: '#7e7eff',
+    HCL: '#844fba',
+    PowerShell: '#2a5ac0',
+    Solidity: '#aa6746',
+    'F#': '#b845fc',
+    Groovy: '#4298b8',
+    'Objective-C': '#438eff',
+    Elm: '#60b5cc',
+    Nim: '#d0a500',
+    'Vim Script': '#199f4b',
+    TeX: '#3d6117',
+    MATLAB: '#e16737',
+};
+for (const [name, anchor] of Object.entries(LANG_ANCHORS)) {
+    exports.LANG_RAMPS[name] = rampFromAnchor(anchor);
+}
 function rampFor(lang) {
     return exports.LANG_RAMPS[lang] ?? exports.LANG_RAMPS.default;
+}
+// --- color math (pure, deterministic) ---
+function hexToRgb(color) {
+    return [
+        parseInt(color.slice(1, 3), 16),
+        parseInt(color.slice(3, 5), 16),
+        parseInt(color.slice(5, 7), 16),
+    ];
+}
+function rgbToHsl(r, g, b) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const l = (max + min) / 2;
+    if (max === min)
+        return [0, 0, l];
+    const d = max - min;
+    const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    const h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return [h * 60, s, l];
+}
+function hslToRgb(h, s, l) {
+    h = ((h % 360) + 360) % 360;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+    const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] :
+        h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+    return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+}
+/** Signed shortest-path hue distance from `h` to `target`, degrees. */
+function hueDelta(h, target) {
+    return ((target - h + 540) % 360) - 180;
+}
+function rampFromAnchor(anchor) {
+    const [h, s] = rgbToHsl(...hexToRgb(anchor));
+    const sat = Math.max(0.3, Math.min(0.72, s));
+    const ladder = [0.24, 0.35, 0.47, 0.61];
+    return ladder.map((l) => {
+        const [r, g, b] = hslToRgb(h, sat, l);
+        const to2 = (v) => v.toString(16).padStart(2, '0');
+        return `#${to2(r)}${to2(g)}${to2(b)}`;
+    });
+}
+/**
+ * Seasonal shift of a leaf color, identity-preserving: the language's hue is
+ * only nudged, never replaced. Greens turn honestly amber in autumn (that's
+ * what leaves do); far-from-green hues (a TypeScript blue, a Kotlin violet)
+ * keep their hue and only pick up warmth and saturation — so the tree's
+ * per-epoch identity survives every season.
+ */
+function seasonize(rgb, season) {
+    if (season === 'summer')
+        return rgb;
+    let [h, s, l] = rgbToHsl(...rgb);
+    if (season === 'spring') {
+        // the fresh flush: clearly lighter, slightly yellow-green
+        h += hueDelta(h, 90) * 0.1;
+        s = Math.min(1, s * 1.12);
+        l = Math.min(0.92, l + 0.08);
+    }
+    else if (season === 'autumn') {
+        // only the true-green family turns amber (that is what leaves do); any
+        // other hue — a TypeScript blue, a Python teal — keeps its hue and goes
+        // deep and rich instead. Identity survives the fall.
+        const greenness = Math.max(0, 1 - Math.abs(hueDelta(h, 110)) / 48);
+        if (greenness > 0) {
+            h += hueDelta(h, 38) * 0.85 * Math.pow(greenness, 0.7);
+            s = Math.min(1, s * (1 + 0.2 * greenness));
+        }
+        else {
+            h += hueDelta(h, 35) * 0.06;
+            s = Math.min(1, s * 1.05);
+            l *= 0.88;
+        }
+    }
+    else {
+        // winter: frost mutes everything, hue stays put (a whisper of cool)
+        h += hueDelta(h, 210) * 0.06;
+        s *= 0.5;
+        l = Math.min(0.95, l * 0.94 + 0.08);
+    }
+    return hslToRgb(h, s, l);
+}
+/** Map an ISO date to the (northern-hemisphere) season, deterministically. */
+function seasonFromDate(isoDate) {
+    const month = Number(isoDate.slice(5, 7));
+    return month >= 3 && month <= 5 ? 'spring'
+        : month >= 6 && month <= 8 ? 'summer'
+            : month >= 9 && month <= 11 ? 'autumn'
+                : 'winter';
 }
 /** Language family -> species archetype. */
 const FAMILY = {
     C: 'pine', 'C++': 'pine', Rust: 'pine', Go: 'pine', Zig: 'pine',
-    Assembly: 'pine', Cuda: 'pine',
+    Assembly: 'pine', Cuda: 'pine', Nim: 'pine', Solidity: 'pine',
     Python: 'maple', Ruby: 'maple', PHP: 'maple', Lua: 'maple', Perl: 'maple',
-    R: 'maple', 'Jupyter Notebook': 'maple',
+    R: 'maple', 'Jupyter Notebook': 'maple', Elixir: 'maple', Erlang: 'maple',
+    Julia: 'maple', MATLAB: 'maple',
     JavaScript: 'cherry', TypeScript: 'cherry', CSS: 'cherry', HTML: 'cherry',
-    Astro: 'cherry', Vue: 'cherry', Svelte: 'cherry',
+    Astro: 'cherry', Vue: 'cherry', Svelte: 'cherry', Elm: 'cherry',
     Shell: 'juniper', Dockerfile: 'juniper', HCL: 'juniper', Makefile: 'juniper',
-    Nix: 'juniper', PowerShell: 'juniper',
+    Nix: 'juniper', PowerShell: 'juniper', 'Vim Script': 'juniper', TeX: 'juniper',
     Java: 'elm', Kotlin: 'elm', 'C#': 'elm', Scala: 'elm', Swift: 'elm', Dart: 'elm',
+    Haskell: 'elm', OCaml: 'elm', Clojure: 'elm', 'F#': 'elm', Groovy: 'elm',
+    'Objective-C': 'elm',
 };
 function speciesFor(lang) {
     return (lang && FAMILY[lang]) || 'maple';
@@ -90,16 +227,25 @@ function hex(rgb, index, color) {
     rgb[index * 3 + 1] = parseInt(color.slice(3, 5), 16);
     rgb[index * 3 + 2] = parseInt(color.slice(5, 7), 16);
 }
-/** Build the 32-entry RGB palette: species bark + one leaf ramp per epoch. */
-function buildPalette(epochLangs, species = 'maple') {
+/**
+ * Build the 32-entry RGB palette: species bark + one leaf ramp per epoch,
+ * with the season's identity-preserving shift applied to the leaves only —
+ * bark, pot and soil never change with the calendar.
+ */
+function buildPalette(epochLangs, species = 'maple', season = 'summer') {
     const rgb = new Uint8Array(exports.PALETTE_SIZE * 3);
     for (const [idx, color] of Object.entries(BASE))
         hex(rgb, Number(idx), color);
     BARK_RAMPS[species].forEach((color, i) => hex(rgb, exports.TRUNK[i], color));
     for (let e = 0; e < 3; e++) {
         const ramp = rampFor(epochLangs[e]);
-        for (let i = 0; i < 4; i++)
-            hex(rgb, exports.LEAF_E[e][i], ramp[i]);
+        for (let i = 0; i < 4; i++) {
+            const [r, g, b] = seasonize(hexToRgb(ramp[i]), season);
+            const slot = exports.LEAF_E[e][i];
+            rgb[slot * 3] = r;
+            rgb[slot * 3 + 1] = g;
+            rgb[slot * 3 + 2] = b;
+        }
     }
     return rgb;
 }

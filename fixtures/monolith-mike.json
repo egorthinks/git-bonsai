@@ -1,0 +1,94 @@
+{
+  "username": "monolith-mike",
+  "createdAt": "2013-04-12T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 24350,
+  "topLanguages": [
+    {
+      "name": "C",
+      "ratio": 0.7
+    },
+    {
+      "name": "Zig",
+      "ratio": 0.2
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "C"
+    },
+    {
+      "epoch": 1,
+      "lang": "C"
+    },
+    {
+      "epoch": 2,
+      "lang": "Zig"
+    }
+  ],
+  "currentStreak": 15,
+  "maxStreak": 142,
+  "longestGapDays": 210,
+  "gapsOver60d": 2,
+  "weekendRatio": 0.22,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 0.9,
+  "burstiness": 0.3,
+  "repoCount": 9,
+  "flagshipCount": 1,
+  "topRepoShare": 0.82
+}

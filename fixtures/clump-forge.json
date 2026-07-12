@@ -1,0 +1,94 @@
+{
+  "username": "clump-forge",
+  "createdAt": "2013-04-12T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 24350,
+  "topLanguages": [
+    {
+      "name": "Python",
+      "ratio": 0.6
+    },
+    {
+      "name": "Julia",
+      "ratio": 0.3
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Python"
+    },
+    {
+      "epoch": 1,
+      "lang": "Julia"
+    },
+    {
+      "epoch": 2,
+      "lang": "Python"
+    }
+  ],
+  "currentStreak": 15,
+  "maxStreak": 142,
+  "longestGapDays": 210,
+  "gapsOver60d": 2,
+  "weekendRatio": 0.22,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 0.9,
+  "burstiness": 0.3,
+  "repoCount": 7,
+  "flagshipCount": 4,
+  "topRepoShare": 0.28
+}

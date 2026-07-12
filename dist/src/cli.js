@@ -51,6 +51,8 @@ Options:
   --synth    Fabricate deterministic demo metrics from a name (offline)
   --out      Output directory (default: output)
   --scale    Integer upscale factor for SVG/PNG (default: 3)
+  --season   spring | summer | autumn | winter | auto (default: auto,
+             derived from the metrics date — deterministic per input)
 
 Outputs: bonsai.svg, bonsai.png, bonsai.gif (wind), bonsai-growth.gif (timelapse)
 `;
@@ -68,6 +70,11 @@ async function main() {
     const synth = arg('synth');
     const outDir = arg('out') ?? 'output';
     const scale = Number(arg('scale') ?? 3);
+    const season = arg('season') ?? 'auto';
+    if (!['spring', 'summer', 'autumn', 'winter', 'auto'].includes(season)) {
+        process.stderr.write(`error: unknown season "${season}"\n`);
+        process.exit(1);
+    }
     let metrics;
     if (fixture) {
         metrics = (0, data_1.loadFixture)(fixture);
@@ -88,7 +95,7 @@ async function main() {
         process.exit(1);
     }
     const started = Date.now();
-    const out = (0, index_1.generate)(metrics, { scale });
+    const out = (0, index_1.generate)(metrics, { scale, season: season });
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'bonsai.svg'), out.svg);
     fs.writeFileSync(path.join(outDir, 'bonsai.png'), out.png);

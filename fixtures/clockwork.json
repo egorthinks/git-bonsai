@@ -1,0 +1,94 @@
+{
+  "username": "clockwork",
+  "createdAt": "2017-01-05T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 18200,
+  "topLanguages": [
+    {
+      "name": "Kotlin",
+      "ratio": 0.5
+    },
+    {
+      "name": "Java",
+      "ratio": 0.4
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Java"
+    },
+    {
+      "epoch": 1,
+      "lang": "Kotlin"
+    },
+    {
+      "epoch": 2,
+      "lang": "Kotlin"
+    }
+  ],
+  "currentStreak": 40,
+  "maxStreak": 210,
+  "longestGapDays": 20,
+  "gapsOver60d": 0,
+  "weekendRatio": 0.12,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 0.35,
+  "burstiness": 0.18,
+  "repoCount": 9,
+  "topRepoShare": 0.35,
+  "flagshipCount": 1
+}

@@ -1,0 +1,94 @@
+{
+  "username": "storm-rider",
+  "createdAt": "2015-06-15T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 16500,
+  "topLanguages": [
+    {
+      "name": "Rust",
+      "ratio": 0.55
+    },
+    {
+      "name": "C",
+      "ratio": 0.3
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "C"
+    },
+    {
+      "epoch": 1,
+      "lang": "Rust"
+    },
+    {
+      "epoch": 2,
+      "lang": "Rust"
+    }
+  ],
+  "currentStreak": 0,
+  "maxStreak": 25,
+  "longestGapDays": 300,
+  "gapsOver60d": 5,
+  "weekendRatio": 0.35,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 1.8,
+  "burstiness": 0.62,
+  "repoCount": 8,
+  "topRepoShare": 0.4,
+  "flagshipCount": 1
+}

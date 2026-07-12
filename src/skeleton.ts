@@ -38,6 +38,10 @@ export interface Skeleton {
   pads: Pad[];
   baseX: number;
   groundY: number;
+  /** One entry per trunk: base position and radius (for nebari/roots). */
+  bases: { x: number; y: number; r: number }[];
+  /** Height of the gripped rock (sekijoju), 0 otherwise. */
+  rockH: number;
 }
 
 export const W = 256;
@@ -63,15 +67,22 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
   const st = dna.style;
   const windSign = Math.sign(dna.lean) || 1;
   const species = SPECIES[dna.species];
-  const baseX = W / 2 - windSign * (st === 'cascade' ? 24 : st === 'han-kengai' ? 16 : 11);
-  const sPhase = rng() * Math.PI * 2; // phase of the trunk's S-curve
+  const baseX = W / 2 - windSign *
+    (st === 'cascade' ? 24 : st === 'han-kengai' ? 16 : st === 'yose-ue' ? 0 : 11);
+  // sekijoju: the trunk starts on top of a rock; roots bridge down to the soil
+  const rockH = dna.rock ? clamp(12 + dna.baseRadius, 14, 24) : 0;
+  const baseY = GROUND_Y - rockH;
+  // per-trunk S-curve phases (drawn up front so trunk count can't shift the stream)
+  const sPhases = Array.from({ length: 7 }, () => rng() * Math.PI * 2);
+  let sPhase = sPhases[0];
+  let curLean = dna.lean; // the currently growing trunk's own lean
   // bunjin keeps its sparse crown near the apex only
   const bunjinGateY = GROUND_Y - dna.trunkLen * 1.45;
   let clock = 0;
 
   const shapedAngle = (dir: number, order: number, traveled: number, totalLen: number): number => {
     // steer toward the style's target direction; -PI/2 is straight up
-    let target = -Math.PI / 2 + dna.lean;
+    let target = -Math.PI / 2 + curLean;
     let strength = order === 0 ? 0.14 : 0.2;
     let sAmp = 0.24;
     switch (st) {
@@ -80,7 +91,8 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
         sAmp = 0.08;
         break;
       case 'slanted':
-        if (order === 0) target = -Math.PI / 2 + dna.lean * 1.6;
+      case 'sekijoju': // the rock-gripper leans like shakan, bracing on its roots
+        if (order === 0) target = -Math.PI / 2 + curLean * 1.6;
         break;
       case 'han-kengai':
       case 'cascade': {
@@ -88,7 +100,7 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
           const t = clamp(traveled / Math.max(1, totalLen), 0, 1);
           const over = st === 'cascade' ? 0.9 : 0.35; // full dive vs sideways pour
           target = t < 0.35
-            ? -Math.PI / 2 + dna.lean * 1.6
+            ? -Math.PI / 2 + curLean * 1.6
             : windSign > 0 ? over : Math.PI - over;
           strength = t < 0.35 ? 0.25 : 0.16;
         }
@@ -103,7 +115,7 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
         // mid branches at ~30 degrees, twig-bearing ends nearly horizontal
         const stream = order <= 1 ? 0.55 : 0.18;
         target = order === 0
-          ? -Math.PI / 2 + dna.lean * 1.3
+          ? -Math.PI / 2 + curLean * 1.3
           : windSign > 0 ? -stream : Math.PI + stream;
         // primaries keep their wide exit angle; only the ends chase the wind
         strength = order === 0 ? 0.2 : order === 1 ? 0.1 : 0.3;
@@ -114,6 +126,11 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
         target = -Math.PI / 2;
         strength = order === 0 ? 0.5 : 0.28;
         sAmp = order === 0 ? 0 : 0.12;
+        break;
+      case 'yose-ue':
+        // forest trees stay small and upright — gentle, readable trunks
+        strength = order === 0 ? 0.32 : 0.22;
+        sAmp = 0.1;
         break;
     }
     let out = dir + angleDiff(target, dir) * strength;
@@ -207,7 +224,16 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
     grow(px, py, pdir + range(rng, -0.15, 0.15), len * range(rng, 0.66, 0.74), order + 1, last, traveled);
   };
 
-  grow(baseX, GROUND_Y, -Math.PI / 2 + dna.lean * 0.5, dna.trunkLen, 0, -1, 0);
+  // grow every trunk from the shared base (multi-trunk styles have several);
+  // sequential growth keeps the timelapse story: the dominant trunk comes first
+  const bases: Skeleton['bases'] = [];
+  dna.trunks.forEach((trunk, i) => {
+    sPhase = sPhases[Math.min(i, sPhases.length - 1)];
+    curLean = trunk.lean;
+    const tx = baseX + trunk.dx;
+    bases.push({ x: tx, y: baseY, r: dna.baseRadius * trunk.scale });
+    grow(tx, baseY, -Math.PI / 2 + trunk.lean * 0.5, dna.trunkLen * trunk.scale, 0, -1, 0);
+  });
 
   // normalize births of the woody skeleton to 0..0.75 (twigs+foliage take the rest)
   const maxClock = Math.max(1, clock - 1);
@@ -220,7 +246,8 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
   }
 
   // cap foliage pads: dense trees would otherwise explode twig counts
-  const maxPads = 45 + Math.round(dna.foliage * 35);
+  // (multi-trunk trees get a modest bonus so every trunk keeps a crown)
+  const maxPads = Math.round((45 + dna.foliage * 35) * (1 + 0.2 * (dna.trunks.length - 1)));
   let sites = padSites;
   if (sites.length > maxPads) {
     const step = sites.length / maxPads;
@@ -240,12 +267,13 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
     const birth = parentSeg ? parentSeg.birth + 0.05 : 0.5;
     const dead = deadSet.has(i);
     const epoch = parentSeg ? parentSeg.epoch : 2;
-    const padR = (7 + dna.foliage * 8.5) * range(rng, 0.8, 1.2) * (dna.style === 'bunjin' ? 0.8 : 1);
+    const padScale = dna.style === 'bunjin' ? 0.8 : dna.style === 'yose-ue' ? 0.74 : 1;
+    const padR = (7 + dna.foliage * 8.5) * range(rng, 0.8, 1.2) * padScale;
     const tips = growTwigs(segs, site, dead, birth, padR, dna, rng);
     pads.push({ x: site.x, y: site.y, r: padR, birth: Math.min(birth, 0.95), dead, epoch, tips });
   });
 
-  return { segs, pads, baseX, groundY: GROUND_Y };
+  return { segs, pads, baseX, groundY: GROUND_Y, bases, rockH };
 }
 
 /**

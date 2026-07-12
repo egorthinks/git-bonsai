@@ -54,9 +54,10 @@ async function run() {
     const outDir = input('output-dir') || 'output';
     const doCommit = (input('commit') || 'true') !== 'false';
     const message = input('commit-message') || 'chore: tend the bonsai 🌳';
+    const season = (input('season') || 'auto');
     console.log(`growing bonsai for @${user} ...`);
     const metrics = await (0, data_1.fetchMetrics)(user, token);
-    const out = (0, index_1.generate)(metrics);
+    const out = (0, index_1.generate)(metrics, { season });
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'bonsai.svg'), out.svg);
     fs.writeFileSync(path.join(outDir, 'bonsai.png'), out.png);

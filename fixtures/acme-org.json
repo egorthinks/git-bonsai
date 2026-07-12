@@ -1,0 +1,95 @@
+{
+  "username": "acme-org",
+  "createdAt": "2013-04-12T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 60000,
+  "topLanguages": [
+    {
+      "name": "Kotlin",
+      "ratio": 0.4
+    },
+    {
+      "name": "TypeScript",
+      "ratio": 0.35
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Java"
+    },
+    {
+      "epoch": 1,
+      "lang": "Kotlin"
+    },
+    {
+      "epoch": 2,
+      "lang": "TypeScript"
+    }
+  ],
+  "currentStreak": 15,
+  "maxStreak": 142,
+  "longestGapDays": 210,
+  "gapsOver60d": 2,
+  "weekendRatio": 0.22,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 0.9,
+  "burstiness": 0.3,
+  "repoCount": 24,
+  "isOrg": true,
+  "flagshipCount": 3,
+  "topRepoShare": 0.3
+}

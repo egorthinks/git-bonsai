@@ -25,13 +25,23 @@ export interface Metrics {
   burstiness?: number;
   /** Number of owned, non-fork repositories. */
   repoCount?: number;
+  /** Share of the heaviest repo in the total repo weight (0..1). */
+  topRepoShare?: number;
+  /**
+   * Number of long-lived "flagship" repos of similar weight (>= 75% of the top
+   * repo, older than a year, together dominating the account). 1 = one leader.
+   */
+  flagshipCount?: number;
+  /** True for organization accounts (metrics approximated from repo history). */
+  isOrg?: boolean;
 }
 
 /**
  * Trunk styles, named after the bonsai tradition:
  * formal = chokkan, slanted = shakan, cascade = kengai,
  * han-kengai = semi-cascade, bunjin = literati, windswept = fukinagashi,
- * broom = hokidachi.
+ * broom = hokidachi, sokan = twin trunk, kabudachi = clump,
+ * yose-ue = forest, sekijoju = root over rock.
  */
 export type Style =
   | 'formal'
@@ -40,7 +50,27 @@ export type Style =
   | 'cascade'
   | 'bunjin'
   | 'windswept'
-  | 'broom';
+  | 'broom'
+  | 'sokan'
+  | 'kabudachi'
+  | 'yose-ue'
+  | 'sekijoju';
+
+/** Seasonal palette shift; 'summer' is the base identity. */
+export type Season = 'spring' | 'summer' | 'autumn' | 'winter';
+
+/** Bonsai size classes: pot size is a growth reward. */
+export type SizeClass = 'shohin' | 'chuhin' | 'dai';
+
+/** One trunk sharing the tree's base (multi-trunk styles have several). */
+export interface Trunk {
+  /** Horizontal offset of this trunk's base from the tree's base, px. */
+  dx: number;
+  /** Relative size of this trunk (1 = the dominant one). */
+  scale: number;
+  /** This trunk's own lean in radians. */
+  lean: number;
+}
 
 /** Species archetypes: each bundles crown shape, leaf stamp and bark texture. */
 export type SpeciesId = 'pine' | 'maple' | 'cherry' | 'juniper' | 'elm';
@@ -78,6 +108,14 @@ export interface BonsaiDNA {
   shari: boolean;
   /** Hollow in the trunk — returned after 2+ years of silence. */
   uro: boolean;
+  /** Trunks sharing the base; single-trunk styles have exactly one. */
+  trunks: Trunk[];
+  /** Root-over-rock (sekijoju): the tree grips a boulder above the soil. */
+  rock: boolean;
+  /** Pot size class — the pot itself is a growth reward. */
+  sizeClass: SizeClass;
+  /** Pot scale factor derived from the size class (yose-ue uses a flat tray). */
+  potScale: number;
   potWeeks: number[];
   ageYears: number;
 }

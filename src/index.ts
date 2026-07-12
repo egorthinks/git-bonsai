@@ -1,15 +1,16 @@
-import { Metrics, BonsaiDNA } from './types';
+import { Metrics, BonsaiDNA, Season } from './types';
 import { makeRng } from './seed';
 import { deriveDna } from './dna';
 import { buildSkeleton, Skeleton } from './skeleton';
 import { applyThickness } from './thickness';
 import { renderFrame } from './render';
 import { windFrames, growthFrames } from './animate';
-import { buildPalette } from './palette';
+import { buildPalette, seasonFromDate } from './palette';
 import { frameToSvg, frameToPng, framesToGif } from './encode';
 
-export { Metrics, BonsaiDNA } from './types';
+export { Metrics, BonsaiDNA, Season } from './types';
 export { fetchMetrics, loadFixture, synthMetrics } from './data';
+export { seasonFromDate } from './palette';
 
 export interface BonsaiOutput {
   /** Static snapshot for fast README embeds. */
@@ -27,6 +28,11 @@ export interface GenerateOptions {
   scale?: number;
   windFrameCount?: number;
   growthFrameCount?: number;
+  /**
+   * Seasonal leaf-palette shift. 'auto' (the default) derives the season from
+   * metrics.fetchedAt — still fully deterministic: same metrics, same bytes.
+   */
+  season?: Season | 'auto';
 }
 
 /**
@@ -41,7 +47,9 @@ export function generate(metrics: Metrics, opts: GenerateOptions = {}): BonsaiOu
   const dna = deriveDna(metrics, rng);
   const skel: Skeleton = buildSkeleton(dna, rng);
   applyThickness(skel, dna);
-  const palette = buildPalette(dna.palettes, dna.species);
+  const season: Season =
+    !opts.season || opts.season === 'auto' ? seasonFromDate(metrics.fetchedAt) : opts.season;
+  const palette = buildPalette(dna.palettes, dna.species, season);
 
   const still = renderFrame(dna, skel, { growthT: 1, windPhase: null });
   const wind = windFrames(dna, skel, opts.windFrameCount ?? 24);
