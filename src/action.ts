@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
-import { generate } from './index';
+import { generate, Season } from './index';
 import { fetchMetrics } from './data';
 
 function input(name: string): string {
@@ -21,9 +21,11 @@ async function run(): Promise<void> {
   const doCommit = (input('commit') || 'true') !== 'false';
   const message = input('commit-message') || 'chore: tend the bonsai 🌳';
 
+  const season = (input('season') || 'auto') as Season | 'auto';
+
   console.log(`growing bonsai for @${user} ...`);
   const metrics = await fetchMetrics(user, token);
-  const out = generate(metrics);
+  const out = generate(metrics, { season });
 
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'bonsai.svg'), out.svg);

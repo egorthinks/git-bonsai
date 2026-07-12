@@ -1,0 +1,98 @@
+{
+  "username": "hanami",
+  "createdAt": "2016-03-20T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 9800,
+  "topLanguages": [
+    {
+      "name": "TypeScript",
+      "ratio": 0.5
+    },
+    {
+      "name": "JavaScript",
+      "ratio": 0.3
+    },
+    {
+      "name": "Astro",
+      "ratio": 0.15
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "TypeScript"
+    },
+    {
+      "epoch": 2,
+      "lang": "Astro"
+    }
+  ],
+  "currentStreak": 21,
+  "maxStreak": 130,
+  "longestGapDays": 90,
+  "gapsOver60d": 1,
+  "weekendRatio": 0.27,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 0.8,
+  "burstiness": 0.25,
+  "repoCount": 12,
+  "topRepoShare": 0.3,
+  "flagshipCount": 1
+}

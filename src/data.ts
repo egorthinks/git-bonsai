@@ -22,8 +22,10 @@ async function gql<T>(token: string, query: string, variables: Record<string, un
   });
   if (!res.ok) throw new Error(`GitHub GraphQL HTTP ${res.status}: ${await res.text()}`);
   const body = (await res.json()) as { data?: T; errors?: { message: string }[] };
-  if (body.errors?.length) throw new Error(`GitHub GraphQL: ${body.errors[0].message}`);
-  if (!body.data) throw new Error('GitHub GraphQL: empty response');
+  // tolerate partial responses: probing user+organization always NOT_FOUNDs one of them
+  if (!body.data) {
+    throw new Error(`GitHub GraphQL: ${body.errors?.[0]?.message ?? 'empty response'}`);
+  }
   return body.data;
 }
 
@@ -54,6 +56,33 @@ query($login: String!) {
   }
 }`;
 
+const ORG_QUERY = `
+query($login: String!) {
+  organization(login: $login) {
+    createdAt
+    repositories(first: 100, isFork: false, orderBy: { field: STARGAZERS, direction: DESC }) {
+      nodes {
+        createdAt
+        languages(first: 5, orderBy: { field: SIZE, direction: DESC }) {
+          edges { size node { name } }
+        }
+        defaultBranchRef {
+          target {
+            ... on Commit {
+              history(first: 100) { totalCount nodes { committedDate } }
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
+
+interface RepoNode {
+  createdAt: string;
+  languages: { edges: { size: number; node: { name: string } }[] };
+}
+
 /** Pull raw metrics from the GitHub API and normalize them (full history, year by year). */
 export async function fetchMetrics(username: string, token: string): Promise<Metrics> {
   const now = new Date();
@@ -62,7 +91,7 @@ export async function fetchMetrics(username: string, token: string): Promise<Met
     from: new Date(now.getTime() - 300 * DAY_MS).toISOString(),
     to: now.toISOString(),
   });
-  if (!probe.user) throw new Error(`GitHub user not found: ${username}`);
+  if (!probe.user) return fetchOrgMetrics(username, token, now);
   const createdAt = probe.user.createdAt;
 
   // contributionsCollection covers at most one year per query — walk the years
@@ -84,10 +113,51 @@ export async function fetchMetrics(username: string, token: string): Promise<Met
   }
 
   const repos = await gql<{
-    user: { repositories: { nodes: { createdAt: string; languages: { edges: { size: number; node: { name: string } }[] } }[] } };
+    user: { repositories: { nodes: RepoNode[] } };
   }>(token, REPOS_QUERY, { login: username });
 
   return normalize(username, createdAt, now, days, repos.user.repositories.nodes);
+}
+
+/**
+ * Organization accounts have no contribution calendar, so the daily series is
+ * approximated from recent default-branch commits of the top repos. Repo
+ * languages/ages work exactly like for users.
+ */
+async function fetchOrgMetrics(login: string, token: string, now: Date): Promise<Metrics> {
+  type OrgRepo = RepoNode & {
+    defaultBranchRef: {
+      target: { history: { totalCount: number; nodes: { committedDate: string }[] } } | null;
+    } | null;
+  };
+  const data = await gql<{ organization: { createdAt: string; repositories: { nodes: OrgRepo[] } } | null }>(
+    token, ORG_QUERY, { login },
+  );
+  if (!data.organization) throw new Error(`GitHub user or organization not found: ${login}`);
+  const { createdAt, repositories } = data.organization;
+
+  // fold commit dates of all default branches into one synthetic daily series
+  const perDay = new Map<string, number>();
+  let totalCommits = 0;
+  for (const repo of repositories.nodes) {
+    const hist = repo.defaultBranchRef?.target?.history;
+    if (!hist) continue;
+    totalCommits += hist.totalCount;
+    for (const c of hist.nodes) {
+      const day = c.committedDate.slice(0, 10);
+      perDay.set(day, (perDay.get(day) ?? 0) + 1);
+    }
+  }
+  const days: Day[] = [];
+  const start = Date.parse(createdAt);
+  for (let t = start; t <= now.getTime(); t += DAY_MS) {
+    const date = new Date(t).toISOString().slice(0, 10);
+    days.push({ date, count: perDay.get(date) ?? 0 });
+  }
+  const metrics = normalize(login, createdAt, now, days, repositories.nodes, true);
+  // history(first: 100) undercounts activity — trust the branch totals instead
+  metrics.totalContributions = Math.max(metrics.totalContributions, totalCommits);
+  return metrics;
 }
 
 function normalize(
@@ -95,7 +165,8 @@ function normalize(
   createdAt: string,
   now: Date,
   days: Day[],
-  repos: { createdAt: string; languages: { edges: { size: number; node: { name: string } }[] } }[],
+  repos: RepoNode[],
+  isOrg = false,
 ): Metrics {
   const totalContributions = days.reduce((s, d) => s + d.count, 0);
 
@@ -167,15 +238,37 @@ function normalize(
   const third = (now.getTime() - created) / 3;
   const buckets = [new Map<string, number>(), new Map<string, number>(), new Map<string, number>()];
   const overall = new Map<string, number>();
+  const repoWeights: { weight: number; ageDays: number }[] = [];
   for (const repo of repos) {
     const idx = Math.min(2, Math.max(0, Math.floor((Date.parse(repo.createdAt) - created) / third)));
+    let repoWeight = 0;
     for (const edge of repo.languages.edges) {
       // log-damped bytes: one huge repo shouldn't drown several small ones
       const weight = Math.log2(1 + edge.size / 1024);
+      repoWeight += weight;
       buckets[idx].set(edge.node.name, (buckets[idx].get(edge.node.name) ?? 0) + weight);
       overall.set(edge.node.name, (overall.get(edge.node.name) ?? 0) + weight);
     }
+    repoWeights.push({
+      weight: repoWeight,
+      ageDays: (now.getTime() - Date.parse(repo.createdAt)) / DAY_MS,
+    });
   }
+
+  // repo concentration: does one rock tower over the history, or do a few
+  // flagships of similar weight split it?
+  repoWeights.sort((a, b) => b.weight - a.weight);
+  const weightSum = repoWeights.reduce((s, r) => s + r.weight, 0);
+  const topWeight = repoWeights[0]?.weight ?? 0;
+  const topRepoShare = weightSum > 0 ? topWeight / weightSum : 0;
+  // flagships: long-lived repos within 75% of the leader that together
+  // dominate the account — otherwise it's just one leader with satellites
+  const flagships = repoWeights.filter((r) => r.ageDays > 365 && r.weight >= topWeight * 0.75);
+  const flagshipSum = flagships.reduce((s, r) => s + r.weight, 0);
+  const flagshipCount =
+    flagships.length >= 2 && weightSum > 0 && flagshipSum / weightSum >= 0.55
+      ? Math.min(5, flagships.length)
+      : 1;
   const top = (m: Map<string, number>): string | null =>
     [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? null;
   const totalSize = [...overall.values()].reduce((s, v) => s + v, 0) || 1;
@@ -210,6 +303,9 @@ function normalize(
     weeklyCv,
     burstiness,
     repoCount: repos.length,
+    topRepoShare,
+    flagshipCount,
+    isOrg,
   };
 }
 
@@ -253,5 +349,8 @@ export function synthMetrics(username: string): Metrics {
     weeklyCv: 0.4 + rng() * 1.4,
     burstiness: rng() * 0.7,
     repoCount: 1 + Math.floor(rng() * 20),
+    topRepoShare: rng() * 0.85,
+    flagshipCount: rng() < 0.7 ? 1 : 2 + Math.floor(rng() * 4),
+    isOrg: false,
   };
 }

@@ -20,6 +20,9 @@ inputs:
   commit-message:
     description: 'Commit message for the daily re-run'
     default: 'chore: tend the bonsai 🌳'
+  season:
+    description: 'Leaf palette season: spring/summer/autumn/winter, or "auto" to follow the calendar'
+    default: 'auto'
 runs:
   using: 'node20'
   main: 'dist/src/action.js'

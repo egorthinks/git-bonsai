@@ -69,12 +69,29 @@ function renderFrame(dna, skel, opts = {}) {
             (0, raster_1.fillCapsule)(deadMask, skeleton_1.W, skeleton_1.H, sway(s.ax, s.ay) + (pxv / L) * off, s.ay + (pyv / L) * off, sway(s.bx, s.by) + (pxv / L) * off, s.by + (pyv / L) * off, r * 0.3, 1);
         }
     }
-    // nebari: root buttresses flaring at the soil line, one pair per flare step
-    for (let i = 0; i < dna.rootFlare * 2; i++) {
-        const side = i % 2 === 0 ? 1 : -1;
-        const spread = dna.baseRadius * (1.15 + 0.4 * Math.floor(i / 2)) * t;
-        (0, raster_1.fillCapsule)(aliveMask, skeleton_1.W, skeleton_1.H, skel.baseX, skel.groundY - 4, skel.baseX + side * spread, skel.groundY - 2, dna.baseRadius * 0.36, 1);
-    }
+    // nebari: root buttresses flaring at the soil line, one pair per flare step;
+    // every trunk of a multi-trunk tree gets its own (smaller) flare
+    // roots must land inside the pot's mouth, never over its rim
+    const soilHalf = Math.round(skeleton_1.W * 0.23 * (dna.style === 'yose-ue' ? 1.56 : dna.potScale) * 0.9) - 6;
+    skel.bases.forEach((base, k) => {
+        const flare = k === 0 ? dna.rootFlare : Math.max(1, dna.rootFlare - 1);
+        for (let i = 0; i < flare * 2; i++) {
+            const side = i % 2 === 0 ? 1 : -1;
+            const spread = base.r * (1.15 + 0.4 * Math.floor(i / 2)) * t;
+            if (skel.rockH > 0) {
+                // sekijoju: long roots grip the rock, running down its flanks into the soil
+                const endX = (0, seed_1.clamp)(base.x + side * (spread * 1.7 + 3), skeleton_1.W / 2 - soilHalf, skeleton_1.W / 2 + soilHalf);
+                (0, raster_1.fillCapsule)(aliveMask, skeleton_1.W, skeleton_1.H, base.x, base.y + 2, endX, skel.groundY - 2, base.r * 0.3, 1);
+            }
+            else {
+                const endX = (0, seed_1.clamp)(base.x + side * spread, skeleton_1.W / 2 - soilHalf, skeleton_1.W / 2 + soilHalf);
+                (0, raster_1.fillCapsule)(aliveMask, skeleton_1.W, skeleton_1.H, base.x, base.y - 4, endX, base.y - 2, base.r * 0.36, 1);
+            }
+        }
+    });
+    // sekijoju's rock goes in before the wood is shaded, so roots read on top
+    if (skel.rockH > 0)
+        drawRock(frame, dna, skel, noise);
     const shadeAlive = (0, shade_1.makeShader)(aliveMask, skeleton_1.W, skeleton_1.H, palette_1.TRUNK.length, {
         depthMix: 0.38, depthScale: 0.13,
         bark: {
@@ -123,13 +140,49 @@ function renderFrame(dna, skel, opts = {}) {
         (0, foliage_1.drawPetals)(frame, dna, skel, phase);
     return frame;
 }
+/**
+ * Sekijoju's boulder: a noise-lumped ellipse sitting on the soil, shaded in
+ * the bleached deadwood grays. Drawn before the wood so roots wrap over it.
+ */
+function drawRock(frame, dna, skel, noise) {
+    const cx = skel.bases[0]?.x ?? skel.baseX;
+    const cy = skel.groundY - skel.rockH / 2 + 2;
+    const rx = dna.baseRadius * 1.9 + 11;
+    const ry = skel.rockH / 2 + 4;
+    const mask = new Uint8Array(skeleton_1.W * skeleton_1.H);
+    for (let y = Math.max(0, Math.floor(cy - ry - 3)); y <= Math.min(skeleton_1.H - 1, Math.ceil(cy + ry + 3)); y++) {
+        for (let x = Math.max(0, Math.floor(cx - rx - 3)); x <= Math.min(skeleton_1.W - 1, Math.ceil(cx + rx + 3)); x++) {
+            const ex = (x - cx) / rx;
+            const ey = (y - cy) / ry;
+            const lump = noise(x * 0.13 + 61, y * 0.13 - 29) * 0.24;
+            if (ex * ex + ey * ey <= 1 + lump && y <= skel.groundY)
+                mask[y * skeleton_1.W + x] = 1;
+        }
+    }
+    const shade = (0, shade_1.makeShader)(mask, skeleton_1.W, skeleton_1.H, palette_1.DEAD.length, {
+        depthMix: 0.42,
+        noise,
+        noiseAmp: 0.3,
+        noiseScaleX: 0.16,
+        noiseScaleY: 0.16,
+    });
+    for (let y = 0; y < skeleton_1.H; y++) {
+        for (let x = 0; x < skeleton_1.W; x++) {
+            const band = shade(x, y);
+            if (band >= 0)
+                frame.set(x, y, palette_1.DEAD[band], raster_1.CLS_POT);
+        }
+    }
+}
 /** Pot with the contribution mosaic of the current year as its soil. */
 function drawPot(frame, dna, skel, noise) {
     const cx = skeleton_1.W / 2;
     const gy = skel.groundY;
-    const rimHalf = Math.round(skeleton_1.W * 0.23); // 59 at 256
-    const bodyHalf = Math.round(rimHalf * 0.9); // 53
-    const bodyH = Math.round(skeleton_1.W * 0.082); // 21
+    // pot size is a growth reward (shohin -> dai); a forest sits in a wide flat tray
+    const tray = dna.style === 'yose-ue';
+    const rimHalf = Math.round(skeleton_1.W * (tray ? 0.36 : 0.23) * (tray ? 1 : dna.potScale));
+    const bodyHalf = Math.round(rimHalf * 0.9);
+    const bodyH = Math.round(skeleton_1.W * (tray ? 0.05 : 0.082) * (tray ? 1 : dna.potScale));
     // rim
     for (let y = gy; y <= gy + 3; y++) {
         for (let x = cx - rimHalf; x <= cx + rimHalf; x++) {

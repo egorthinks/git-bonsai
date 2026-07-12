@@ -1,0 +1,98 @@
+{
+  "username": "tiny-sprout",
+  "createdAt": "2025-01-10T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 180,
+  "topLanguages": [
+    {
+      "name": "TypeScript",
+      "ratio": 0.48
+    },
+    {
+      "name": "Python",
+      "ratio": 0.31
+    },
+    {
+      "name": "Go",
+      "ratio": 0.12
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Python"
+    },
+    {
+      "epoch": 1,
+      "lang": "Python"
+    },
+    {
+      "epoch": 2,
+      "lang": "TypeScript"
+    }
+  ],
+  "currentStreak": 3,
+  "maxStreak": 9,
+  "longestGapDays": 40,
+  "gapsOver60d": 0,
+  "weekendRatio": 0.22,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 0.9,
+  "burstiness": 0.3,
+  "repoCount": 2,
+  "flagshipCount": 1,
+  "topRepoShare": 0.4
+}

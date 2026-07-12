@@ -100,12 +100,30 @@ committer fills a *dai* tray. Pot size itself becomes a growth reward.
 
 ## Sequencing
 
-1. Pad separation + three eras (small, pure-render wins)
-2. Species archetypes (crown/leaf/bark bundles)
-3. New styles: bunjingi, fukinagashi, hokidachi (single-trunk, cheap)
-4. Sumo trunks + nebari
-5. Multi-trunk styles (sokan, kabudachi, yose-ue for orgs)
-6. Shari/uro deadwood, size classes, seasons
+1. ~~Pad separation + three eras~~ ✅
+2. ~~Species archetypes (crown/leaf/bark bundles)~~ ✅
+3. ~~New styles: bunjingi, fukinagashi, hokidachi~~ ✅
+4. ~~Sumo trunks + nebari~~ ✅
+5. ~~Multi-trunk styles (sokan, kabudachi, yose-ue for orgs) + sekijoju~~ ✅
+6. ~~Shari/uro deadwood~~ ✅, ~~size classes~~ ✅, ~~seasons~~ ✅
+
+The taxonomy above is fully implemented. Notes on the shipped versions:
+
+- **Sokan/kabudachi** are earned by *flagship concentration* (2 or 3-5
+  long-lived repos of similar weight dominating the account) rather than a
+  co-authorship signal — it needs no extra API calls and reads the same story:
+  the account's energy is split between a few equal works.
+- **Sekijoju** triggers when one repo holds ≥ 72% of the account's repo weight.
+- **Yose-ue** renders organization accounts (approximated metrics from repo
+  commit history); each tree in the tray takes the canopy colors of its era.
+- **Seasons** shift only the leaf ramps, in HSL, identity-preserving: true
+  greens turn amber in autumn, every other language hue is kept (deepened in
+  autumn, lightened in spring, frosted in winter). `season: auto` follows the
+  metrics date, so the daily Action makes the tree breathe with the calendar
+  while staying bit-deterministic for a given input.
+
+Possible future directions: co-author-signal sokan, per-repo sub-crowns for
+forests, winter bare-branch mode, southern-hemisphere season flip.
 
 Every step keeps the acceptance criteria: bit-identical determinism, visible
 age/activity scaling, and README-budget file sizes.

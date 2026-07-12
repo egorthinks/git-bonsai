@@ -34,8 +34,28 @@ a three-era cherry (JS → TS → Astro), and a slanted veteran:
   <img src="assets/styles.png" width="720" alt="Six trees showing different earned bonsai styles and species" />
 </p>
 
+Some accounts don't grow *one* trunk. Two flagship repos grow **sokan** (twin
+trunks), several equal flagships grow a **kabudachi** clump, an organization
+grows a whole **yose-ue** forest — one small tree per era of its repos — and
+a single repo that towers over everything puts the tree on a rock
+(**sekijoju**, root-over-rock). The pot itself is a growth reward: young
+accounts start in a small *shohin* pot and veterans earn the big *dai* tray:
+
 <p align="center">
-  <img src="assets/bonsai-sakura.gif" width="300" alt="A literati-style sakura bonsai swaying in the wind" />
+  <img src="assets/styles-multi.png" width="720" alt="Twin-trunk, clump, root-over-rock and forest bonsai styles, plus small and large pot size classes" />
+</p>
+
+The tree also lives with the calendar — leaves flush light in **spring**,
+deepen in **autumn** and frost over in **winter**, while your languages' hues
+stay recognizable year-round (only true greens turn amber — a TypeScript-blue
+crown stays TypeScript-blue):
+
+<p align="center">
+  <img src="assets/seasons.png" width="900" alt="The same bonsai across spring, summer, autumn and winter" />
+</p>
+
+<p align="center">
+  <img src="assets/bonsai-sakura.gif" width="300" alt="A three-era sakura bonsai swaying in the wind" />
   <img src="assets/bonsai.gif" width="300" alt="A veteran two-era bonsai swaying in the wind" />
 </p>
 
@@ -66,7 +86,12 @@ from your history — here is how to grow what you want:
 | sakura blossoms 🌸 | keep streaks: each milestone — **7 / 30 / 100 / 365 days** — adds blossoms, and a live streak of 7+ keeps the tree in bloom |
 | no deadwood | don't vanish: every gap longer than **60 days** turns a branch into gray *jin*; a year away carves a *shari* strip down the trunk, and coming back after 2+ years leaves an *uro* hollow — worn with honor |
 | a different silhouette | your **rhythm** picks the style: metronome consistency grows a *broom* (hokidachi), commit storms after long silences grow a *windswept* tree (fukinagashi), an old account with few repos grows a *literati* (bunjin), and weekend habits decide between *formal*, *slanted*, *semi-cascade* and *cascade* |
+| twin trunks or a clump | concentrate your work: **two long-lived flagship repos** of similar weight grow a *sokan* (twin trunk), three to five grow a *kabudachi* clump — one trunk per flagship |
+| a tree on a rock | pour most of your history into **one towering repo** and the tree grows *sekijoju* — roots gripping a boulder |
+| a whole forest | run the action for an **organization**: every era of its repos becomes a tree in one *yose-ue* tray |
 | a massive sumo trunk | a decade of near-daily work unlocks the heavyweight class: a flaring base with visible *nebari* root spread (the more repos, the wider the roots) |
+| a bigger pot | pots are earned too: account age and activity move you up the traditional size classes — *shohin* → *chuhin* → *dai* |
+| seasons | re-grow daily (the default) and the leaves follow the calendar: fresh spring flush, deep summer, amber autumn, frosted winter — your language hues stay recognizable all year. Pin it with the `season` input if you prefer an eternal summer |
 | a different species | your **language family** decides it: systems languages grow layered *pines*, scripting grows round-cloud *maples*, frontend grows blossoming *cherries*, infra grows ragged *junipers*, JVM/.NET grows fine-twigged *elms* |
 | different colors | the crown is painted by your **top language of each of three eras** — the lower canopy is your past, the upper is your present; switch stacks and the tree will show it |
 | richer soil | the pot's mosaic is your **current year of contributions**, week by week — a green year makes fertile ground |
@@ -118,12 +143,14 @@ The action writes and commits four files: `bonsai.svg` (static), `bonsai.png`,
 | `output-dir` | `output` | where to write the images |
 | `commit` | `true` | commit & push the result |
 | `commit-message` | `chore: tend the bonsai 🌳` | |
+| `season` | `auto` | `spring`/`summer`/`autumn`/`winter`, or `auto` to follow the calendar |
 
 ## Local preview (no push, no token needed)
 
 ```bash
 npx git-bonsai --user yourname --token $GITHUB_TOKEN   # real data
 npx git-bonsai --synth yourname                        # offline demo
+npx git-bonsai --synth yourname --season autumn        # try a season
 ```
 
 ## How it works
@@ -158,9 +185,9 @@ npm run demo      # render fixtures/veteran.json into out/
 ```
 
 `dist/` is committed intentionally — the GitHub Action runs straight from it
-without an install step. See [ROADMAP.md](ROADMAP.md) for where this is going:
-more traditional styles (bunjin, fukinagashi, hokidachi…), species-like
-crowns, massive sumo trunks.
+without an install step. `node scripts/render-assets.js` regenerates every
+image in `assets/` from the fixtures. See [ROADMAP.md](ROADMAP.md) for the
+design notes behind the growth rules.
 
 ## License
 

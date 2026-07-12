@@ -1,0 +1,94 @@
+{
+  "username": "shibui",
+  "createdAt": "2011-09-01T00:00:00Z",
+  "fetchedAt": "2026-07-01",
+  "totalContributions": 2600,
+  "topLanguages": [
+    {
+      "name": "C",
+      "ratio": 0.6
+    },
+    {
+      "name": "Go",
+      "ratio": 0.3
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "C"
+    },
+    {
+      "epoch": 1,
+      "lang": "C"
+    },
+    {
+      "epoch": 2,
+      "lang": "Go"
+    }
+  ],
+  "currentStreak": 2,
+  "maxStreak": 30,
+  "longestGapDays": 200,
+  "gapsOver60d": 3,
+  "weekendRatio": 0.18,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    2,
+    4,
+    3,
+    2,
+    1,
+    1,
+    2,
+    3,
+    4,
+    4,
+    3,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    3,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1,
+    2,
+    3,
+    4,
+    3,
+    2,
+    1,
+    2,
+    3
+  ],
+  "weeklyCv": 1.1,
+  "burstiness": 0.3,
+  "repoCount": 4,
+  "topRepoShare": 0.45,
+  "flagshipCount": 1
+}

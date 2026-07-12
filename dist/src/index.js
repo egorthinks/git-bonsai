@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.synthMetrics = exports.loadFixture = exports.fetchMetrics = void 0;
+exports.seasonFromDate = exports.synthMetrics = exports.loadFixture = exports.fetchMetrics = void 0;
 exports.generate = generate;
 const seed_1 = require("./seed");
 const dna_1 = require("./dna");
@@ -14,6 +14,8 @@ var data_1 = require("./data");
 Object.defineProperty(exports, "fetchMetrics", { enumerable: true, get: function () { return data_1.fetchMetrics; } });
 Object.defineProperty(exports, "loadFixture", { enumerable: true, get: function () { return data_1.loadFixture; } });
 Object.defineProperty(exports, "synthMetrics", { enumerable: true, get: function () { return data_1.synthMetrics; } });
+var palette_2 = require("./palette");
+Object.defineProperty(exports, "seasonFromDate", { enumerable: true, get: function () { return palette_2.seasonFromDate; } });
 /**
  * The full deterministic pipeline:
  * metrics -> seed -> dna -> skeleton -> thickness -> raster/shade/foliage -> animate -> encode.
@@ -26,7 +28,8 @@ function generate(metrics, opts = {}) {
     const dna = (0, dna_1.deriveDna)(metrics, rng);
     const skel = (0, skeleton_1.buildSkeleton)(dna, rng);
     (0, thickness_1.applyThickness)(skel, dna);
-    const palette = (0, palette_1.buildPalette)(dna.palettes, dna.species);
+    const season = !opts.season || opts.season === 'auto' ? (0, palette_1.seasonFromDate)(metrics.fetchedAt) : opts.season;
+    const palette = (0, palette_1.buildPalette)(dna.palettes, dna.species, season);
     const still = (0, render_1.renderFrame)(dna, skel, { growthT: 1, windPhase: null });
     const wind = (0, animate_1.windFrames)(dna, skel, opts.windFrameCount ?? 24);
     const growth = (0, animate_1.growthFrames)(dna, skel, opts.growthFrameCount ?? 44);

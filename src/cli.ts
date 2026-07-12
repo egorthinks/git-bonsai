@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { generate } from './index';
 import { fetchMetrics, loadFixture, synthMetrics } from './data';
-import { Metrics } from './types';
+import { Metrics, Season } from './types';
 
 const HELP = `git-bonsai — grow a deterministic pixel-art bonsai from a GitHub profile
 
@@ -18,6 +18,8 @@ Options:
   --synth    Fabricate deterministic demo metrics from a name (offline)
   --out      Output directory (default: output)
   --scale    Integer upscale factor for SVG/PNG (default: 3)
+  --season   spring | summer | autumn | winter | auto (default: auto,
+             derived from the metrics date — deterministic per input)
 
 Outputs: bonsai.svg, bonsai.png, bonsai.gif (wind), bonsai-growth.gif (timelapse)
 `;
@@ -37,6 +39,11 @@ async function main(): Promise<void> {
   const synth = arg('synth');
   const outDir = arg('out') ?? 'output';
   const scale = Number(arg('scale') ?? 3);
+  const season = arg('season') ?? 'auto';
+  if (!['spring', 'summer', 'autumn', 'winter', 'auto'].includes(season)) {
+    process.stderr.write(`error: unknown season "${season}"\n`);
+    process.exit(1);
+  }
 
   let metrics: Metrics;
   if (fixture) {
@@ -56,7 +63,7 @@ async function main(): Promise<void> {
   }
 
   const started = Date.now();
-  const out = generate(metrics, { scale });
+  const out = generate(metrics, { scale, season: season as Season | 'auto' });
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'bonsai.svg'), out.svg);
   fs.writeFileSync(path.join(outDir, 'bonsai.png'), out.png);
