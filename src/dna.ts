@@ -1,5 +1,5 @@
 import { Metrics, BonsaiDNA, Style, Trunk, SizeClass } from './types';
-import { Rng, clamp, range } from './seed';
+import { Rng, clamp, range, makeRng } from './seed';
 import { speciesFor } from './palette';
 
 const DAY_MS = 86_400_000;
@@ -23,10 +23,12 @@ export function deriveDna(metrics: Metrics, rng: Rng): BonsaiDNA {
   const leanRoll = rng();
   const splitJitA = range(rng, -0.04, 0.04);
   const splitJitB = range(rng, -0.04, 0.04);
-  // per-trunk jitters for multi-trunk styles (drawn even when unused)
-  const trunkScaleJit = Array.from({ length: 7 }, () => range(rng, -0.06, 0.06));
-  const trunkLeanJit = Array.from({ length: 7 }, () => range(rng, -0.08, 0.08));
-  const trunkDxJit = Array.from({ length: 7 }, () => range(rng, -4, 4));
+  // per-trunk jitters for multi-trunk styles come from their own stream:
+  // draining the main rng here would reshuffle every existing tree's skeleton
+  const trunkRng = makeRng(metrics.username.toLowerCase() + '|trunks');
+  const trunkScaleJit = Array.from({ length: 7 }, () => range(trunkRng, -0.06, 0.06));
+  const trunkLeanJit = Array.from({ length: 7 }, () => range(trunkRng, -0.08, 0.08));
+  const trunkDxJit = Array.from({ length: 7 }, () => range(trunkRng, -4, 4));
 
   const ageYears = Math.max(
     0,
