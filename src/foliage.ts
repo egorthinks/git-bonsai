@@ -38,10 +38,12 @@ export function drawFoliage(
   for (const pad of skel.pads) {
     if (pad.dead || pad.birth > t) continue;
     const grow = ease((t - pad.birth) / 0.15);
-    balls.push({ x: sway(pad.x, pad.y - 1), y: pad.y - 1, r: pad.r * 0.58 * grow, epoch: pad.epoch });
+    // a small core blob only glues the very center; the cloud shape comes
+    // from the twig tips so branch structure shows through the gaps
+    balls.push({ x: sway(pad.x, pad.y - 1), y: pad.y - 1, r: pad.r * 0.42 * grow, epoch: pad.epoch });
     for (const tip of pad.tips) {
       if (tip.birth > t) continue;
-      const tr = (3.6 + dna.foliage * 1.9) * ease((t - tip.birth) / 0.1);
+      const tr = (3.2 + dna.foliage * 1.5) * ease((t - tip.birth) / 0.1);
       balls.push({ x: sway(tip.x, tip.y), y: tip.y, r: tr, epoch: pad.epoch });
     }
   }
@@ -84,7 +86,8 @@ export function drawFoliage(
     }
   }
 
-  // separation rises with foliage so dense crowns keep visible layered pads
+  // separation rises with foliage so dense crowns keep visible layered pads;
+  // a low-frequency "hole" noise carves the sky-gaps real crowns have
   const threshold = species.padThreshold + dna.foliage * 0.1;
   const mask = new Uint8Array(w * h);
   const epochBuf = new Uint8Array(w * h);
@@ -92,7 +95,9 @@ export function drawFoliage(
     for (let x = minX; x <= maxX; x++) {
       const i = y * w + x;
       if (field[i] <= 0.05) continue;
-      if (field[i] + noise(x * 0.09, y * 0.09) * 0.3 > threshold) {
+      const ragged = noise(x * 0.09, y * 0.09) * 0.38;
+      const hole = Math.max(0, noise(x * 0.045 + 37, y * 0.045 - 53)) * 0.5;
+      if (field[i] + ragged - hole > threshold) {
         mask[i] = 1;
         let best = 0;
         if (fieldE[1][i] > fieldE[best][i]) best = 1;
@@ -118,7 +123,7 @@ export function drawFoliage(
   }
 
   // leaf-stamp texture (stamp shape comes from the species)
-  const pts = poissonDisk(rng, maxX - minX + 1, maxY - minY + 1, 3.2);
+  const pts = poissonDisk(rng, maxX - minX + 1, maxY - minY + 1, 2.6);
   for (const p of pts) {
     const x = Math.floor(minX + p.x);
     const y = Math.floor(minY + p.y);

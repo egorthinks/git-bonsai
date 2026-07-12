@@ -80,11 +80,11 @@ export interface Species {
 }
 
 export const SPECIES: Record<SpeciesId, Species> = {
-  pine: { padFlatten: 1.6, padThreshold: 0.5, stamp: [[0, 0], [1, -1]], barkAmp: 0.2, droop: 0.2 },
-  maple: { padFlatten: 1.15, padThreshold: 0.44, stamp: [[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], barkAmp: 0.1, droop: 0.1 },
-  cherry: { padFlatten: 1.05, padThreshold: 0.4, stamp: [[0, 0], [1, 0], [0, 1], [1, 1]], barkAmp: 0.08, droop: 0.14 },
-  juniper: { padFlatten: 1.35, padThreshold: 0.55, stamp: [[0, 0]], barkAmp: 0.16, droop: 0.05 },
-  elm: { padFlatten: 1.2, padThreshold: 0.46, stamp: [[0, 0], [0, 1]], barkAmp: 0.06, droop: 0.04 },
+  pine: { padFlatten: 1.6, padThreshold: 0.56, stamp: [[0, 0], [1, -1]], barkAmp: 0.3, droop: 0.2 },
+  maple: { padFlatten: 1.15, padThreshold: 0.5, stamp: [[0, 0], [-1, 0], [1, 0], [0, -1], [0, 1]], barkAmp: 0.22, droop: 0.1 },
+  cherry: { padFlatten: 1.05, padThreshold: 0.46, stamp: [[0, 0], [1, 0], [0, 1], [1, 1]], barkAmp: 0.16, droop: 0.14 },
+  juniper: { padFlatten: 1.35, padThreshold: 0.6, stamp: [[0, 0]], barkAmp: 0.28, droop: 0.05 },
+  elm: { padFlatten: 1.2, padThreshold: 0.52, stamp: [[0, 0], [0, 1]], barkAmp: 0.14, droop: 0.04 },
 };
 
 const BASE: Record<number, string> = {
