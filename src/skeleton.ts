@@ -39,9 +39,9 @@ export interface Skeleton {
   groundY: number;
 }
 
-export const W = 192;
-export const H = 192;
-export const GROUND_Y = 150;
+export const W = 256;
+export const H = 256;
+export const GROUND_Y = 200;
 
 interface PadSite {
   x: number;
@@ -58,7 +58,7 @@ interface PadSite {
 export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
   const segs: Seg[] = [];
   const padSites: PadSite[] = [];
-  const baseX = W / 2 - Math.sign(dna.lean) * (dna.style === 'cascade' ? 18 : 8);
+  const baseX = W / 2 - Math.sign(dna.lean) * (dna.style === 'cascade' ? 24 : 11);
   const sPhase = rng() * Math.PI * 2; // phase of the trunk's S-curve
   let clock = 0;
 
@@ -89,7 +89,7 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
     parent: number,
     traveled: number,
   ): void => {
-    if (len < 6.5 || order > dna.iterations) {
+    if (len < 8.5 || order > dna.iterations) {
       if (order >= 2) padSites.push({ x, y, segIdx: parent, order });
       return;
     }
@@ -105,12 +105,12 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
       pdir = shapedAngle(pdir, order, traveled, dna.trunkLen * 2.2);
       pdir += range(rng, -0.22, 0.22) * (order === 0 ? 1.2 : 1); // trunk gets S-curves
       // keep the tree inside the canvas
-      const margin = 14;
+      const margin = 19;
       if (px < margin) pdir += (Math.abs(angleDiff(0, pdir)) < 1.8 ? 0 : 0.3);
       if (px < margin && Math.cos(pdir) < 0) pdir = mixAngle(pdir, 0, 0.5);
       if (px > W - margin && Math.cos(pdir) > 0) pdir = mixAngle(pdir, Math.PI, 0.5);
-      if (py < 18 && Math.sin(pdir) < 0) pdir = mixAngle(pdir, 0.2 * sideSign, 0.4);
-      if (py > H - 8 && Math.sin(pdir) > 0) pdir = mixAngle(pdir, -Math.PI / 2, 0.5);
+      if (py < 24 && Math.sin(pdir) < 0) pdir = mixAngle(pdir, 0.2 * sideSign, 0.4);
+      if (py > H - 10 && Math.sin(pdir) > 0) pdir = mixAngle(pdir, -Math.PI / 2, 0.5);
 
       const sl = stepLen * range(rng, 0.85, 1.15);
       const nx = px + Math.cos(pdir) * sl;
@@ -149,7 +149,7 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
   for (const s of segs) s.epoch = s.birth / 0.75 <= dna.epochSplit ? 0 : 1;
 
   // cap foliage pads: dense trees would otherwise explode twig counts
-  const maxPads = 34 + Math.round(dna.foliage * 26);
+  const maxPads = 45 + Math.round(dna.foliage * 35);
   let sites = padSites;
   if (sites.length > maxPads) {
     const step = sites.length / maxPads;
@@ -169,7 +169,7 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
     const birth = parentSeg ? parentSeg.birth + 0.05 : 0.5;
     const dead = deadSet.has(i);
     const epoch = parentSeg ? parentSeg.epoch : 1;
-    const padR = (6 + dna.foliage * 8) * range(rng, 0.8, 1.2);
+    const padR = (8 + dna.foliage * 10.5) * range(rng, 0.8, 1.2);
     const tips = growTwigs(segs, site, dead, birth, padR, dna, rng);
     pads.push({ x: site.x, y: site.y, r: padR, birth: Math.min(birth, 0.95), dead, epoch, tips });
   });

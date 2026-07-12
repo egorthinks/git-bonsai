@@ -21,8 +21,8 @@ export function deriveDna(metrics: Metrics, rng: Rng): BonsaiDNA {
 
   // account age -> trunk height, growth iterations, base thickness
   const iterations = clamp(3 + Math.floor(ageYears / 3), 3, 6);
-  const trunkLen = 20 + Math.min(ageYears, 12) * 1.9 + range(rng, -1.5, 1.5);
-  const baseRadius = clamp(2.5 + Math.min(ageYears, 12) * 0.26 + activity * 1.6, 2.5, 6.5);
+  const trunkLen = 27 + Math.min(ageYears, 12) * 2.5 + range(rng, -2, 2);
+  const baseRadius = clamp(3.3 + Math.min(ageYears, 12) * 0.35 + activity * 2.1, 3.3, 8.7);
 
   // total contributions -> branch density & foliage
   const branchChance = 0.26 + 0.3 * activity + range(rng, -0.03, 0.03);

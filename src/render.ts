@@ -35,10 +35,10 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
     ? (x) => x
     : (x, y) => {
       const hf = Math.max(0, skel.groundY - y) / skel.groundY;
-      const amp = 1.5 * hf * hf + 0.25 * hf;
-      const wave = Math.sin(phase + (skel.groundY - y) * 0.05 + x * 0.012);
+      const amp = 2.0 * hf * hf + 0.33 * hf;
+      const wave = Math.sin(phase + (skel.groundY - y) * 0.0375 + x * 0.009);
       // noise sampled on a circle in noise-space so the loop is seamless
-      const n = noise(x * 0.03 + Math.cos(phase) * 0.8, y * 0.03 + Math.sin(phase) * 0.8);
+      const n = noise(x * 0.0225 + Math.cos(phase) * 0.8, y * 0.0225 + Math.sin(phase) * 0.8);
       return x + amp * (0.7 * wave + 0.55 * n);
     };
 
@@ -82,31 +82,35 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
 function drawPot(frame: Frame, dna: BonsaiDNA, skel: Skeleton, noise: Noise2): void {
   const cx = W / 2;
   const gy = skel.groundY;
+  const rimHalf = Math.round(W * 0.23);       // 59 at 256
+  const bodyHalf = Math.round(rimHalf * 0.9); // 53
+  const bodyH = Math.round(W * 0.082);        // 21
 
   // rim
-  for (let y = gy; y <= gy + 2; y++) {
-    for (let x = cx - 44; x <= cx + 44; x++) {
+  for (let y = gy; y <= gy + 3; y++) {
+    for (let x = cx - rimHalf; x <= cx + rimHalf; x++) {
       frame.set(x, y, y === gy ? POT[2] : POT[1], CLS_POT);
     }
   }
   // body with simple lit-left banding + dithering
-  for (let y = gy + 3; y <= gy + 15; y++) {
-    const half = Math.round(40 - ((y - gy - 3) / 12) * 7);
+  for (let y = gy + 4; y <= gy + 3 + bodyH; y++) {
+    const half = Math.round(bodyHalf - ((y - gy - 4) / bodyH) * bodyHalf * 0.18);
     for (let x = cx - half; x <= cx + half; x++) {
       const u = (x - (cx - half)) / (half * 2);
-      const v = 1 - u * 0.9 - (y - gy) * 0.02 + bayer(x, y) * 0.4;
+      const v = 1 - u * 0.9 - (y - gy) * 0.015 + bayer(x, y) * 0.4;
       const band = clamp(Math.round(v * (POT.length - 1)), 0, POT.length - 1);
       frame.set(x, y, POT[band], CLS_POT);
     }
   }
   // feet
-  for (let y = gy + 16; y <= gy + 18; y++) {
-    for (let x = cx - 30; x <= cx - 24; x++) frame.set(x, y, POT[0], CLS_POT);
-    for (let x = cx + 24; x <= cx + 30; x++) frame.set(x, y, POT[0], CLS_POT);
+  const footIn = Math.round(bodyHalf * 0.6);
+  for (let y = gy + 4 + bodyH; y <= gy + 7 + bodyH; y++) {
+    for (let x = cx - footIn - 4; x <= cx - footIn + 4; x++) frame.set(x, y, POT[0], CLS_POT);
+    for (let x = cx + footIn - 4; x <= cx + footIn + 4; x++) frame.set(x, y, POT[0], CLS_POT);
   }
 
   // soil mosaic: 52 weeks of contributions across the pot's mouth
-  const soilHalf = 40;
+  const soilHalf = bodyHalf;
   const soilW = soilHalf * 2;
   for (let i = 0; i < 52; i++) {
     const x0 = cx - soilHalf + Math.floor((i * soilW) / 52);

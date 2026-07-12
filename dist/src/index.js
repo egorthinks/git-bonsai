@@ -20,7 +20,7 @@ Object.defineProperty(exports, "synthMetrics", { enumerable: true, get: function
  * Same metrics in, bit-identical bytes out.
  */
 function generate(metrics, opts = {}) {
-    const scale = opts.scale ?? 4;
+    const scale = opts.scale ?? 3; // 256 native -> 768 display
     const seedKey = metrics.username.toLowerCase();
     const rng = (0, seed_1.makeRng)(seedKey);
     const dna = (0, dna_1.deriveDna)(metrics, rng);
