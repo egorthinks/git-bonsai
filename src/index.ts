@@ -41,7 +41,7 @@ export function generate(metrics: Metrics, opts: GenerateOptions = {}): BonsaiOu
   const dna = deriveDna(metrics, rng);
   const skel: Skeleton = buildSkeleton(dna, rng);
   applyThickness(skel, dna);
-  const palette = buildPalette(dna.palettes);
+  const palette = buildPalette(dna.palettes, dna.species);
 
   const still = renderFrame(dna, skel, { growthT: 1, windPhase: null });
   const wind = windFrames(dna, skel, opts.windFrameCount ?? 24);

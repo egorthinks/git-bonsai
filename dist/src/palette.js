@@ -69,6 +69,14 @@ exports.SPECIES = {
     juniper: { padFlatten: 1.35, padThreshold: 0.6, stamp: [[0, 0]], barkAmp: 0.28, droop: 0.05 },
     elm: { padFlatten: 1.2, padThreshold: 0.52, stamp: [[0, 0], [0, 1]], barkAmp: 0.14, droop: 0.04 },
 };
+/** Bark color ramps (palette slots 2-5) per species, dark -> light. */
+const BARK_RAMPS = {
+    pine: ['#402318', '#5f3a24', '#7f5433', '#9f7146'], // red-brown plates
+    maple: ['#3f3a35', '#5c564f', '#7b746b', '#9c948a'], // smooth silver-gray
+    cherry: ['#3f201a', '#61352a', '#844d39', '#a86a4d'], // mahogany
+    juniper: ['#38352f', '#555148', '#736e62', '#928d7f'], // fibrous gray
+    elm: ['#4a443a', '#6b6455', '#8e8672', '#b1a890'], // pale tan-gray
+};
 const BASE = {
     1: '#14100b',
     2: '#3d2b1a', 3: '#5c4026', 4: '#7d5a35', 5: '#9c7648',
@@ -82,11 +90,12 @@ function hex(rgb, index, color) {
     rgb[index * 3 + 1] = parseInt(color.slice(3, 5), 16);
     rgb[index * 3 + 2] = parseInt(color.slice(5, 7), 16);
 }
-/** Build the 32-entry RGB palette with one leaf ramp per epoch. */
-function buildPalette(epochLangs) {
+/** Build the 32-entry RGB palette: species bark + one leaf ramp per epoch. */
+function buildPalette(epochLangs, species = 'maple') {
     const rgb = new Uint8Array(exports.PALETTE_SIZE * 3);
     for (const [idx, color] of Object.entries(BASE))
         hex(rgb, Number(idx), color);
+    BARK_RAMPS[species].forEach((color, i) => hex(rgb, exports.TRUNK[i], color));
     for (let e = 0; e < 3; e++) {
         const ramp = rampFor(epochLangs[e]);
         for (let i = 0; i < 4; i++)

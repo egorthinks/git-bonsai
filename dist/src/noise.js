@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.makeBark = makeBark;
 exports.makeSimplex = makeSimplex;
 const GRAD = [
     [1, 1], [-1, 1], [1, -1], [-1, -1],
@@ -8,6 +9,21 @@ const GRAD = [
 ];
 const F2 = 0.5 * (Math.sqrt(3) - 1);
 const G2 = (3 - Math.sqrt(3)) / 6;
+/**
+ * Bark texture: domain-warped ridged noise — the classic recipe for wood.
+ * A low-frequency warp bends the ridge lines organically; ridging
+ * (1 - |n|)^2 turns smooth noise into sharp bark plates and fissures.
+ * Returns 0..1 (high = ridge crest).
+ */
+function makeBark(noise) {
+    return (x, y, sx, sy) => {
+        const wx = noise(x * sx * 0.45 + 11.3, y * sy * 0.45 - 7.1);
+        const wy = noise(x * sx * 0.45 - 3.7, y * sy * 0.45 + 9.2);
+        const n = noise(x * sx + wx * 2.2, y * sy + wy * 2.2);
+        const ridge = 1 - Math.abs(n);
+        return ridge * ridge;
+    };
+}
 /** 2D simplex noise (Gustavson) with a permutation table shuffled by the seeded PRNG. Output in [-1, 1]. */
 function makeSimplex(rng) {
     const p = new Uint8Array(256);
