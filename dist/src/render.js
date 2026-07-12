@@ -12,11 +12,12 @@ function ease(v) {
     const t = (0, seed_1.clamp)(v, 0, 1);
     return t * t * (3 - 2 * t);
 }
-/** Compose one 192x192 indexed frame: pot -> wood -> foliage -> keyline. */
+/** Compose one 256x256 indexed frame: wood -> pot -> foliage -> keyline. */
 function renderFrame(dna, skel, opts = {}) {
     const t = opts.growthT ?? 1;
     const phase = opts.windPhase ?? null;
     const frame = new raster_1.Frame(skeleton_1.W, skeleton_1.H);
+    const species = palette_1.SPECIES[dna.species];
     // fresh streams per frame so animation frames stay coherent (no per-frame jitter)
     const rng = (0, seed_1.makeRng)(dna.seedKey + '|frame');
     const noise = (0, noise_1.makeSimplex)((0, seed_1.makeRng)(dna.seedKey + '|noise'));
@@ -34,15 +35,30 @@ function renderFrame(dna, skel, opts = {}) {
     const aliveMask = new Uint8Array(skeleton_1.W * skeleton_1.H);
     const deadMask = new Uint8Array(skeleton_1.W * skeleton_1.H);
     const maturity = 0.4 + 0.6 * t;
+    const windSign = Math.sign(dna.lean) || 1;
     for (const s of skel.segs) {
         if (s.birth > t)
             continue;
         const rEase = 0.3 + 0.7 * ease((t - s.birth) * 8);
         const r = s.twig ? s.radius : s.radius * rEase * maturity;
         (0, raster_1.fillCapsule)(s.dead ? deadMask : aliveMask, skeleton_1.W, skeleton_1.H, sway(s.ax, s.ay), s.ay, sway(s.bx, s.by), s.by, r, 1);
+        // shari: a pale strip of deadwood along the lower trunk's shaded side
+        if (dna.shari && !s.twig && s.order <= 1 && s.birth < 0.3 && r > 2.5) {
+            const pxv = s.by - s.ay;
+            const pyv = -(s.bx - s.ax);
+            const L = Math.hypot(pxv, pyv) || 1;
+            const off = (r * 0.55) * -windSign;
+            (0, raster_1.fillCapsule)(deadMask, skeleton_1.W, skeleton_1.H, sway(s.ax, s.ay) + (pxv / L) * off, s.ay + (pyv / L) * off, sway(s.bx, s.by) + (pxv / L) * off, s.by + (pyv / L) * off, r * 0.3, 1);
+        }
+    }
+    // nebari: root buttresses flaring at the soil line, one pair per flare step
+    for (let i = 0; i < dna.rootFlare * 2; i++) {
+        const side = i % 2 === 0 ? 1 : -1;
+        const spread = dna.baseRadius * (1.15 + 0.4 * Math.floor(i / 2)) * t;
+        (0, raster_1.fillCapsule)(aliveMask, skeleton_1.W, skeleton_1.H, skel.baseX, skel.groundY - 4, skel.baseX + side * spread, skel.groundY - 2, dna.baseRadius * 0.36, 1);
     }
     const shadeAlive = (0, shade_1.makeShader)(aliveMask, skeleton_1.W, skeleton_1.H, palette_1.TRUNK.length, {
-        depthMix: 0.4, noise, noiseAmp: 0.12, noiseScaleX: 0.5, noiseScaleY: 0.12,
+        depthMix: 0.4, noise, noiseAmp: species.barkAmp, noiseScaleX: 0.5, noiseScaleY: 0.12,
     });
     const shadeDead = (0, shade_1.makeShader)(deadMask, skeleton_1.W, skeleton_1.H, palette_1.DEAD.length, { depthMix: 0.35 });
     for (let y = 0; y < skeleton_1.H; y++) {
@@ -53,6 +69,24 @@ function renderFrame(dna, skel, opts = {}) {
             const d = shadeDead(x, y);
             if (d >= 0)
                 frame.set(x, y, palette_1.DEAD[d], raster_1.CLS_DEAD);
+        }
+    }
+    // uro: a small hollow in the trunk — the mark of coming back after 2+ years
+    if (dna.uro && t > 0.5) {
+        const trunk = skel.segs.filter((s) => !s.twig && s.order <= 1);
+        if (trunk.length > 4) {
+            const seg = trunk[Math.floor(trunk.length * 0.25)];
+            const ux = Math.round(sway((seg.ax + seg.bx) / 2, (seg.ay + seg.by) / 2));
+            const uy = Math.round((seg.ay + seg.by) / 2);
+            if (frame.clsAt(ux, uy) === raster_1.CLS_WOOD) {
+                for (let oy = -2; oy <= 2; oy++) {
+                    for (let ox = -1; ox <= 1; ox++) {
+                        if (ox * ox + (oy * oy) / 2.5 > 1.6)
+                            continue;
+                        frame.set(ux + ox, uy + oy, oy === 2 ? palette_1.DEAD[2] : palette_1.OUTLINE, raster_1.CLS_WOOD);
+                    }
+                }
+            }
         }
     }
     // painter's order: the pot is drawn over the wood so the trunk sinks into

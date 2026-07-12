@@ -13,12 +13,14 @@ function ease(v) {
 }
 /**
  * Canopy: metaballs around twig tips + simplex-perturbed silhouette, shaded in
- * 3-4 posterized bands with dithering, textured with Poisson-disk leaf stamps.
- * Blossoms appear on streak milestones. Painter's order: canopy pads sit on
+ * posterized bands with dithering, textured with Poisson-disk leaf stamps.
+ * Species picks the pad flatness, the separation threshold and the leaf stamp;
+ * each pixel's epoch picks its leaf ramp. Painter's order: canopy pads sit on
  * top of the wood already in the frame.
  */
 function drawFoliage(frame, dna, skel, t, sway, rng, noise) {
     const { w, h } = frame;
+    const species = palette_1.SPECIES[dna.species];
     const balls = [];
     for (const pad of skel.pads) {
         if (pad.dead || pad.birth > t)
@@ -45,10 +47,10 @@ function drawFoliage(frame, dna, skel, t, sway, rng, noise) {
     minY = Math.max(0, Math.floor(minY));
     maxX = Math.min(w - 1, Math.ceil(maxX));
     maxY = Math.min(h - 1, Math.ceil(maxY));
-    // accumulate the metaball field per-ball over its own bbox (fast) and track
-    // the epoch-1 share to decide each pixel's leaf palette
+    // accumulate the metaball field per-ball over its own bbox (fast); per-epoch
+    // fields decide each pixel's leaf palette
     const field = new Float32Array(w * h);
-    const field1 = new Float32Array(w * h);
+    const fieldE = [new Float32Array(w * h), new Float32Array(w * h), new Float32Array(w * h)];
     for (const b of balls) {
         if (b.r <= 0.4)
             continue;
@@ -58,7 +60,7 @@ function drawFoliage(frame, dna, skel, t, sway, rng, noise) {
         const by1 = Math.min(maxY, Math.ceil(b.y + b.r));
         const inv = 1 / (b.r * b.r);
         for (let y = by0; y <= by1; y++) {
-            const dy = (y - b.y) * 1.25; // slightly flattened pads
+            const dy = (y - b.y) * species.padFlatten;
             for (let x = bx0; x <= bx1; x++) {
                 const dx = x - b.x;
                 const q = 1 - (dx * dx + dy * dy) * inv;
@@ -67,11 +69,12 @@ function drawFoliage(frame, dna, skel, t, sway, rng, noise) {
                 const contrib = q * q;
                 const i = y * w + x;
                 field[i] += contrib;
-                if (b.epoch === 1)
-                    field1[i] += contrib;
+                fieldE[b.epoch][i] += contrib;
             }
         }
     }
+    // separation rises with foliage so dense crowns keep visible layered pads
+    const threshold = species.padThreshold + dna.foliage * 0.1;
     const mask = new Uint8Array(w * h);
     const epochBuf = new Uint8Array(w * h);
     for (let y = minY; y <= maxY; y++) {
@@ -79,9 +82,14 @@ function drawFoliage(frame, dna, skel, t, sway, rng, noise) {
             const i = y * w + x;
             if (field[i] <= 0.05)
                 continue;
-            if (field[i] + noise(x * 0.09, y * 0.09) * 0.3 > 0.42) {
+            if (field[i] + noise(x * 0.09, y * 0.09) * 0.3 > threshold) {
                 mask[i] = 1;
-                epochBuf[i] = field1[i] > field[i] * 0.5 ? 1 : 0;
+                let best = 0;
+                if (fieldE[1][i] > fieldE[best][i])
+                    best = 1;
+                if (fieldE[2][i] > fieldE[best][i])
+                    best = 2;
+                epochBuf[i] = best;
             }
         }
     }
@@ -92,18 +100,15 @@ function drawFoliage(frame, dna, skel, t, sway, rng, noise) {
         noiseScaleX: 0.22,
         noiseScaleY: 0.22,
     });
-    const ramps = [dna.secondaryPalette ? palette_1.LEAF_B : palette_1.LEAF_A, palette_1.LEAF_A];
     for (let y = minY; y <= maxY; y++) {
         for (let x = minX; x <= maxX; x++) {
             const band = shade(x, y);
             if (band < 0)
                 continue;
-            frame.set(x, y, ramps[epochBuf[y * w + x]][band], raster_1.CLS_CANOPY);
+            frame.set(x, y, palette_1.LEAF_E[epochBuf[y * w + x]][band], raster_1.CLS_CANOPY);
         }
     }
-    // leaf-stamp texture (stamp shape depends on the section's language)
-    const stampA = (0, palette_1.rampFor)(dna.primaryPalette).stamp;
-    const stampB = dna.secondaryPalette ? (0, palette_1.rampFor)(dna.secondaryPalette).stamp : stampA;
+    // leaf-stamp texture (stamp shape comes from the species)
     const pts = (0, poisson_1.poissonDisk)(rng, maxX - minX + 1, maxY - minY + 1, 3.2);
     for (const p of pts) {
         const x = Math.floor(minX + p.x);
@@ -111,15 +116,8 @@ function drawFoliage(frame, dna, skel, t, sway, rng, noise) {
         const i = y * w + x;
         if (x < 0 || y < 0 || x >= w || y >= h || !mask[i])
             continue;
-        const epoch = epochBuf[i];
-        const ramp = ramps[epoch];
-        const stamp = epoch === 1 ? stampA : stampB;
-        const cells = stamp === 0
-            ? [[0, 0], [1, 0], [0, 1], [1, 1]]
-            : stamp === 1
-                ? [[0, 0], [-1, 0], [1, 0], [0, -1]]
-                : [[0, 0], [1, -1]];
-        for (const [ox, oy] of cells) {
+        const ramp = palette_1.LEAF_E[epochBuf[i]];
+        for (const [ox, oy] of species.stamp) {
             const xx = x + ox;
             const yy = y + oy;
             if (xx < 0 || yy < 0 || xx >= w || yy >= h || !mask[yy * w + xx])
@@ -140,7 +138,8 @@ function drawFlowers(frame, dna, skel, t, sway, mask) {
     const alive = skel.pads.filter((p) => !p.dead);
     if (alive.length === 0)
         return;
-    const blossoms = dna.flowers * 2;
+    // cherries bloom harder — it's their whole point
+    const blossoms = dna.flowers * (dna.species === 'cherry' ? 3 : 2);
     for (let i = 0; i < blossoms; i++) {
         const pad = alive[(i * 7) % alive.length];
         if (t < pad.birth + 0.12)

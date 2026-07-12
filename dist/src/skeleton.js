@@ -3,38 +3,80 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GROUND_Y = exports.H = exports.W = void 0;
 exports.buildSkeleton = buildSkeleton;
 const seed_1 = require("./seed");
+const palette_1 = require("./palette");
 const poisson_1 = require("./poisson");
 exports.W = 256;
 exports.H = 256;
 exports.GROUND_Y = 200;
 /**
  * Build the branch graph: a stochastic parametric L-system grows the trunk and
- * primary branches, then space colonization (Runions) grows fine twigs at each
- * foliage pad. Every segment carries a birth time for the growth timelapse.
+ * primary branches (shaped per bonsai style), then space colonization (Runions)
+ * grows fine twigs at each foliage pad. Every segment carries a birth time for
+ * the growth timelapse.
  */
 function buildSkeleton(dna, rng) {
     const segs = [];
     const padSites = [];
-    const baseX = exports.W / 2 - Math.sign(dna.lean) * (dna.style === 'cascade' ? 24 : 11);
+    const st = dna.style;
+    const windSign = Math.sign(dna.lean) || 1;
+    const species = palette_1.SPECIES[dna.species];
+    const baseX = exports.W / 2 - windSign * (st === 'cascade' ? 24 : st === 'han-kengai' ? 16 : 11);
     const sPhase = rng() * Math.PI * 2; // phase of the trunk's S-curve
+    // bunjin keeps its sparse crown near the apex only
+    const bunjinGateY = exports.GROUND_Y - dna.trunkLen * 1.45;
     let clock = 0;
     const shapedAngle = (dir, order, traveled, totalLen) => {
-        // steer toward the style's target direction; angles: -PI/2 is straight up
+        // steer toward the style's target direction; -PI/2 is straight up
         let target = -Math.PI / 2 + dna.lean;
         let strength = order === 0 ? 0.14 : 0.2;
-        if (dna.style === 'cascade' && order <= 1) {
-            const t = (0, seed_1.clamp)(traveled / Math.max(1, totalLen), 0, 1);
-            // rise first, then pour over the pot rim and dive
-            target = t < 0.35 ? -Math.PI / 2 + dna.lean * 1.6 : Math.sign(dna.lean) > 0 ? 0.9 : Math.PI - 0.9;
-            strength = t < 0.35 ? 0.25 : 0.16;
-        }
-        else if (dna.style === 'slanted' && order === 0) {
-            target = -Math.PI / 2 + dna.lean * 1.6;
+        let sAmp = 0.24;
+        switch (st) {
+            case 'formal':
+                strength = order === 0 ? 0.3 : 0.22;
+                sAmp = 0.08;
+                break;
+            case 'slanted':
+                if (order === 0)
+                    target = -Math.PI / 2 + dna.lean * 1.6;
+                break;
+            case 'han-kengai':
+            case 'cascade': {
+                if (order <= 1) {
+                    const t = (0, seed_1.clamp)(traveled / Math.max(1, totalLen), 0, 1);
+                    const over = st === 'cascade' ? 0.9 : 0.35; // full dive vs sideways pour
+                    target = t < 0.35
+                        ? -Math.PI / 2 + dna.lean * 1.6
+                        : windSign > 0 ? over : Math.PI - over;
+                    strength = t < 0.35 ? 0.25 : 0.16;
+                }
+                break;
+            }
+            case 'bunjin':
+                strength = order === 0 ? 0.09 : 0.2;
+                sAmp = 0.38;
+                break;
+            case 'windswept': {
+                // the trunk leans like shakan; branches stream downwind in layers —
+                // mid branches at ~30 degrees, twig-bearing ends nearly horizontal
+                const stream = order <= 1 ? 0.55 : 0.18;
+                target = order === 0
+                    ? -Math.PI / 2 + dna.lean * 1.3
+                    : windSign > 0 ? -stream : Math.PI + stream;
+                // primaries keep their wide exit angle; only the ends chase the wind
+                strength = order === 0 ? 0.2 : order === 1 ? 0.1 : 0.3;
+                sAmp = 0.12;
+                break;
+            }
+            case 'broom':
+                target = -Math.PI / 2;
+                strength = order === 0 ? 0.5 : 0.28;
+                sAmp = order === 0 ? 0 : 0.12;
+                break;
         }
         let out = dir + angleDiff(target, dir) * strength;
-        // trunk movement: an S-curve along the traveled distance
-        if (order === 0)
-            out += Math.sin(traveled * 0.11 + sPhase) * 0.24;
+        // trunk movement: an S-curve fading with branching order
+        const sFade = order === 0 ? 1 : order === 1 ? 0.6 : 0.3;
+        out += Math.sin(traveled * 0.11 + sPhase) * sAmp * sFade;
         return out;
     };
     const grow = (x, y, dir, len, order, parent, traveled) => {
@@ -49,14 +91,13 @@ function buildSkeleton(dna, rng) {
         let py = y;
         let pdir = dir;
         let last = parent;
+        // branches alternate sides; windswept ones all curve downwind via their target
         let sideSign = rng() < 0.5 ? -1 : 1;
         for (let s = 0; s < steps; s++) {
             pdir = shapedAngle(pdir, order, traveled, dna.trunkLen * 2.2);
-            pdir += (0, seed_1.range)(rng, -0.22, 0.22) * (order === 0 ? 1.2 : 1); // trunk gets S-curves
+            pdir += (0, seed_1.range)(rng, -0.22, 0.22) * (order === 0 ? 1.2 : 1);
             // keep the tree inside the canvas
             const margin = 19;
-            if (px < margin)
-                pdir += (Math.abs(angleDiff(0, pdir)) < 1.8 ? 0 : 0.3);
             if (px < margin && Math.cos(pdir) < 0)
                 pdir = mixAngle(pdir, 0, 0.5);
             if (px > exports.W - margin && Math.cos(pdir) > 0)
@@ -65,6 +106,10 @@ function buildSkeleton(dna, rng) {
                 pdir = mixAngle(pdir, 0.2 * sideSign, 0.4);
             if (py > exports.H - 10 && Math.sin(pdir) > 0)
                 pdir = mixAngle(pdir, -Math.PI / 2, 0.5);
+            // semi-cascade pours sideways but never below the pot's base
+            if (st === 'han-kengai' && py > exports.GROUND_Y + 14 && Math.sin(pdir) > 0) {
+                pdir = mixAngle(pdir, windSign > 0 ? -0.2 : Math.PI + 0.2, 0.5);
+            }
             const sl = stepLen * (0, seed_1.range)(rng, 0.85, 1.15);
             const nx = px + Math.cos(pdir) * sl;
             const ny = py + Math.sin(pdir) * sl;
@@ -75,17 +120,36 @@ function buildSkeleton(dna, rng) {
             });
             last = segs.length - 1;
             traveled += sl;
-            // side branches bend toward the horizontal (with a slight aged droop)
-            if (order < dna.iterations && s >= 1 && rng() < dna.branchChance) {
+            // side branches bend toward the horizontal (with a species-specific droop)
+            const mayBranch = order < dna.iterations && s >= 1 &&
+                (st !== 'broom' || order > 0) && // broom fans at the top instead
+                (st !== 'bunjin' || ny < bunjinGateY); // literati: bare trunk below the crown
+            if (mayBranch && rng() < dna.branchChance) {
                 const spread = (0, seed_1.range)(rng, 0.7, 1.2) * sideSign;
                 sideSign = -sideSign;
                 let side = pdir + spread;
-                const droop = Math.cos(side) >= 0 ? 0.12 : Math.PI - 0.12;
-                side = mixAngle(side, droop, order === 0 ? 0.5 : 0.3);
-                grow(nx, ny, side, len * (0, seed_1.range)(rng, 0.55, 0.72), order + 1, last, 0);
+                const droopAmt = 0.12 + species.droop;
+                const droop = st === 'windswept'
+                    ? (windSign > 0 ? droopAmt : Math.PI - droopAmt)
+                    : (Math.cos(side) >= 0 ? droopAmt : Math.PI - droopAmt);
+                const droopMix = st === 'broom' ? 0.05 : st === 'windswept' ? 0.6 : order === 0 ? 0.5 : 0.3;
+                side = mixAngle(side, droop, droopMix);
+                // windswept branches run a touch longer with the wind
+                const lenLo = st === 'windswept' ? 0.58 : 0.55;
+                const lenHi = st === 'windswept' ? 0.75 : 0.72;
+                grow(nx, ny, side, len * (0, seed_1.range)(rng, lenLo, lenHi), order + 1, last, 0);
             }
             px = nx;
             py = ny;
+        }
+        if (st === 'broom' && order === 0) {
+            // hokidachi: the trunk splits into an even upward fan
+            const fan = 5;
+            for (let i = 0; i < fan; i++) {
+                const a = -Math.PI / 2 + (i - (fan - 1) / 2) * 0.42 + (0, seed_1.range)(rng, -0.08, 0.08);
+                grow(px, py, a, len * (0, seed_1.range)(rng, 0.52, 0.64), order + 1, last, 0);
+            }
+            return;
         }
         // apical continuation
         grow(px, py, pdir + (0, seed_1.range)(rng, -0.15, 0.15), len * (0, seed_1.range)(rng, 0.66, 0.74), order + 1, last, traveled);
@@ -95,9 +159,11 @@ function buildSkeleton(dna, rng) {
     const maxClock = Math.max(1, clock - 1);
     for (const s of segs)
         s.birth = (s.birth / maxClock) * 0.75;
-    // mark epochs by birth order: older wood is the lower/earlier part of the tree
-    for (const s of segs)
-        s.epoch = s.birth / 0.75 <= dna.epochSplit ? 0 : 1;
+    // mark epochs by birth order: older wood is the earlier-grown part of the tree
+    for (const s of segs) {
+        const bt = s.birth / 0.75;
+        s.epoch = bt <= dna.epochSplits[0] ? 0 : bt <= dna.epochSplits[1] ? 1 : 2;
+    }
     // cap foliage pads: dense trees would otherwise explode twig counts
     const maxPads = 45 + Math.round(dna.foliage * 35);
     let sites = padSites;
@@ -116,8 +182,8 @@ function buildSkeleton(dna, rng) {
         const parentSeg = segs[site.segIdx];
         const birth = parentSeg ? parentSeg.birth + 0.05 : 0.5;
         const dead = deadSet.has(i);
-        const epoch = parentSeg ? parentSeg.epoch : 1;
-        const padR = (8 + dna.foliage * 10.5) * (0, seed_1.range)(rng, 0.8, 1.2);
+        const epoch = parentSeg ? parentSeg.epoch : 2;
+        const padR = (8 + dna.foliage * 10.5) * (0, seed_1.range)(rng, 0.8, 1.2) * (dna.style === 'bunjin' ? 0.8 : 1);
         const tips = growTwigs(segs, site, dead, birth, padR, dna, rng);
         pads.push({ x: site.x, y: site.y, r: padR, birth: Math.min(birth, 0.95), dead, epoch, tips });
     });
@@ -184,7 +250,7 @@ function growTwigs(segs, site, dead, birth, padR, dna, rng) {
             segs.push({
                 ax: nodes[ni].x, ay: nodes[ni].y, bx: nx, by: ny,
                 parent: nodes[ni].seg, order: site.order + 1, birth: tBirth,
-                twig: true, dead, epoch: segs[site.segIdx]?.epoch ?? 1, radius: 0.55,
+                twig: true, dead, epoch: segs[site.segIdx]?.epoch ?? 2, radius: 0.55,
             });
             nodes.push({ x: nx, y: ny, seg: segs.length - 1 });
             grown.push(nodes.length - 1);

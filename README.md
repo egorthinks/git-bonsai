@@ -24,6 +24,16 @@ Same stats, six different souls — the seed (your username) decides the tree's 
   <img src="assets/gallery.png" width="720" alt="Six different sakura bonsai grown from identical metrics but different seeds" />
 </p>
 
+Different histories grow different trees entirely — style and species are earned, not chosen.
+Left to right: **hokidachi** (broom — metronome consistency, elm), **fukinagashi**
+(windswept — bursty storm-coder, pine), **bunjin** (literati — an old minimalist, pine),
+a **sumo** trunk with *shari* & *uro* deadwood scars (16 years, one long disappearance, maple),
+a three-era cherry (JS → TS → Astro), and a slanted veteran:
+
+<p align="center">
+  <img src="assets/styles.png" width="720" alt="Six trees showing different earned bonsai styles and species" />
+</p>
+
 <p align="center">
   <img src="assets/bonsai-sakura.gif" width="300" alt="A literati-style sakura bonsai swaying in the wind" />
   <img src="assets/bonsai.gif" width="300" alt="A veteran two-era bonsai swaying in the wind" />
@@ -54,9 +64,11 @@ from your history — here is how to grow what you want:
 | a taller, thicker trunk | be patient — trunk height, thickness and branching depth come from **account age** (it literally can't be rushed) |
 | a denser, fuller crown | commit more — foliage and branch density scale with **total contributions** (private ones count if you let them — see below) |
 | sakura blossoms 🌸 | keep streaks: each milestone — **7 / 30 / 100 / 365 days** — adds blossoms, and a live streak of 7+ keeps the tree in bloom |
-| no deadwood | don't vanish: every gap longer than **60 days** turns a branch into gray *jin* (a break of 180+ days scars noticeably) |
-| a different silhouette | your **commit-time habits** pick the style: weekday-only discipline grows *formal upright*, moderate weekend work grows *slanted*, heavy weekend hacking grows *cascade* |
-| different colors | the crown is painted by your **top language of each era** — the lower canopy is your past, the upper is your present; switch stacks and the tree will show it |
+| no deadwood | don't vanish: every gap longer than **60 days** turns a branch into gray *jin*; a year away carves a *shari* strip down the trunk, and coming back after 2+ years leaves an *uro* hollow — worn with honor |
+| a different silhouette | your **rhythm** picks the style: metronome consistency grows a *broom* (hokidachi), commit storms after long silences grow a *windswept* tree (fukinagashi), an old account with few repos grows a *literati* (bunjin), and weekend habits decide between *formal*, *slanted*, *semi-cascade* and *cascade* |
+| a massive sumo trunk | a decade of near-daily work unlocks the heavyweight class: a flaring base with visible *nebari* root spread (the more repos, the wider the roots) |
+| a different species | your **language family** decides it: systems languages grow layered *pines*, scripting grows round-cloud *maples*, frontend grows blossoming *cherries*, infra grows ragged *junipers*, JVM/.NET grows fine-twigged *elms* |
+| different colors | the crown is painted by your **top language of each of three eras** — the lower canopy is your past, the upper is your present; switch stacks and the tree will show it |
 | richer soil | the pot's mosaic is your **current year of contributions**, week by week — a green year makes fertile ground |
 | a different tree entirely | you can't — the **seed is your username**, forever. Like a real tree, you work with the nature you were given 🙏 |
 
