@@ -42,8 +42,6 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
       return x + amp * (0.7 * wave + 0.55 * n);
     };
 
-  drawPot(frame, dna, skel, noise);
-
   // rasterize wood into alive/dead masks, then shade with SDF volume + dithering
   const aliveMask = new Uint8Array(W * H);
   const deadMask = new Uint8Array(W * H);
@@ -69,6 +67,10 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
       if (d >= 0) frame.set(x, y, DEAD[d], CLS_DEAD);
     }
   }
+
+  // painter's order: the pot is drawn over the wood so the trunk sinks into
+  // the soil instead of spilling its rounded base over the pot body
+  drawPot(frame, dna, skel, noise);
 
   drawFoliage(frame, dna, skel, t, sway, rng, noise);
   outlinePass(frame, OUTLINE);

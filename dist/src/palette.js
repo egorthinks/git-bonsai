@@ -34,6 +34,8 @@ exports.LANG_RAMPS = {
     Swift: { colors: ['#6b3812', '#98511a', '#c47426', '#eba24c'], stamp: 1 },
     Shell: { colors: ['#2c4c22', '#417030', '#5c9744', '#87c46a'], stamp: 2 },
     HTML: { colors: ['#6b3012', '#964a1a', '#c26c24', '#e89a4c'], stamp: 0 },
+    Astro: { colors: ['#7a2e10', '#ab4a16', '#d8701f', '#f7a03f'], stamp: 1 },
+    'Jupyter Notebook': { colors: ['#14524d', '#1e7a6f', '#2fa392', '#57ccb6'], stamp: 1 },
     CSS: { colors: ['#3c2a5c', '#593f85', '#7a58ad', '#a385d2'], stamp: 0 },
 };
 function rampFor(lang) {
