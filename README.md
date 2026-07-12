@@ -10,22 +10,63 @@ Every account grows exactly one tree — deterministic, procedural, 16-bit style
 The older your account and the richer your history, the bigger and denser your bonsai.
 It keeps growing as you keep committing.
 
-| your GitHub | your tree |
-|---|---|
-| account age | trunk height, growth rings, base thickness |
-| total contributions | branch density, foliage richness |
-| top language per era | leaf palette & leaf shape per tree section |
-| streak milestones (7/30/100/365) | sakura blossoms |
-| long inactivity gaps | deadwood branches (jin) |
-| commit-time habits | style: formal upright / slanted / cascade |
-| current year of contributions | the soil mosaic in the pot |
+> ### 🌸 Share your bonsai!
+> Every tree is unique — your username is its seed and your history is its shape,
+> so nobody else can ever grow yours. Post a screenshot with **#gitbonsai**,
+> drop a link to your profile in [Discussions](../../discussions), and let
+> others see what a decade of commits looks like as a living thing.
 
-Ten years of TypeScript over Python, with two long breaks, looks like this — while a one-year-old account is still a sprout:
+## Gallery
+
+Same stats, six different souls — the seed (your username) decides the tree's character:
 
 <p align="center">
-  <img src="assets/bonsai.gif" width="320" alt="Veteran bonsai swaying in the wind" />
-  <img src="assets/bonsai-young.png" width="320" alt="A young, small bonsai" />
+  <img src="assets/gallery.png" width="720" alt="Six different sakura bonsai grown from identical metrics but different seeds" />
 </p>
+
+<p align="center">
+  <img src="assets/bonsai-sakura.gif" width="300" alt="A literati-style sakura bonsai swaying in the wind" />
+  <img src="assets/bonsai.gif" width="300" alt="A veteran two-era bonsai swaying in the wind" />
+</p>
+
+## Why a bonsai?
+
+Bonsai is one of the oldest living art forms. It began in Han-dynasty China as
+*penjing* — "tray scenery", miniature landscapes of trees and rock — and came
+to Japan around the Kamakura period together with Zen Buddhism, where it was
+distilled into the art of a single tree in a single pot. A bonsai is never
+finished: it is a decades-long collaboration between the tree and its keeper,
+shaped season by season, and it embodies *wabi-sabi* — the beauty of
+imperfection and impermanence. A crooked trunk, a dead branch, a scar: these
+are not flaws but biography.
+
+That's exactly what your commit history is. git-bonsai just makes the
+biography visible: your years become growth rings, your streaks bloom, your
+burnout gaps leave honest deadwood. You don't draw this tree — you *live* it.
+
+## The rules of growth 🌱
+
+Like a real bonsai, this tree answers to its keeper. Everything is derived
+from your history — here is how to grow what you want:
+
+| you want | you do |
+|---|---|
+| a taller, thicker trunk | be patient — trunk height, thickness and branching depth come from **account age** (it literally can't be rushed) |
+| a denser, fuller crown | commit more — foliage and branch density scale with **total contributions** (private ones count if you let them — see below) |
+| sakura blossoms 🌸 | keep streaks: each milestone — **7 / 30 / 100 / 365 days** — adds blossoms, and a live streak of 7+ keeps the tree in bloom |
+| no deadwood | don't vanish: every gap longer than **60 days** turns a branch into gray *jin* (a break of 180+ days scars noticeably) |
+| a different silhouette | your **commit-time habits** pick the style: weekday-only discipline grows *formal upright*, moderate weekend work grows *slanted*, heavy weekend hacking grows *cascade* |
+| different colors | the crown is painted by your **top language of each era** — the lower canopy is your past, the upper is your present; switch stacks and the tree will show it |
+| richer soil | the pot's mosaic is your **current year of contributions**, week by week — a green year makes fertile ground |
+| a different tree entirely | you can't — the **seed is your username**, forever. Like a real tree, you work with the nature you were given 🙏 |
+
+Two switches worth knowing:
+
+- **Count private work.** Enable *Private contributions* on your profile
+  (the gear above your contribution calendar) — the crown fills out using your
+  full commit count, no token required.
+- **Count private languages.** Pass a PAT with repo access as `github-token`
+  (store it as a repo secret!) and your private stack colors the crown too.
 
 ## Install (3 lines of YAML)
 
@@ -84,7 +125,7 @@ seed      username → FNV-1a → sfc32 PRNG
 dna       metrics + PRNG → tree genotype
 skeleton  stochastic L-system (trunk & branches) + space colonization (twigs)
 thickness pipe model / Murray's law
-raster    Bresenham + scanline capsule fill → 192×192 indexed buffer
+raster    Bresenham + scanline capsule fill → 256×256 indexed buffer
 shade     8SSEDT SDF volume → posterized light → Bayer dithering → keyline
 foliage   Poisson-disk (Bridson) leaves, simplex silhouette, blossoms
 animate   wind (sine + simplex, seamless loop) & growth timelapse
@@ -105,7 +146,9 @@ npm run demo      # render fixtures/veteran.json into out/
 ```
 
 `dist/` is committed intentionally — the GitHub Action runs straight from it
-without an install step.
+without an install step. See [ROADMAP.md](ROADMAP.md) for where this is going:
+more traditional styles (bunjin, fukinagashi, hokidachi…), species-like
+crowns, massive sumo trunks.
 
 ## License
 
