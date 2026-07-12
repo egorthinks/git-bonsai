@@ -22,10 +22,12 @@ function deriveDna(metrics, rng) {
     const leanRoll = rng();
     const splitJitA = (0, seed_1.range)(rng, -0.04, 0.04);
     const splitJitB = (0, seed_1.range)(rng, -0.04, 0.04);
-    // per-trunk jitters for multi-trunk styles (drawn even when unused)
-    const trunkScaleJit = Array.from({ length: 7 }, () => (0, seed_1.range)(rng, -0.06, 0.06));
-    const trunkLeanJit = Array.from({ length: 7 }, () => (0, seed_1.range)(rng, -0.08, 0.08));
-    const trunkDxJit = Array.from({ length: 7 }, () => (0, seed_1.range)(rng, -4, 4));
+    // per-trunk jitters for multi-trunk styles come from their own stream:
+    // draining the main rng here would reshuffle every existing tree's skeleton
+    const trunkRng = (0, seed_1.makeRng)(metrics.username.toLowerCase() + '|trunks');
+    const trunkScaleJit = Array.from({ length: 7 }, () => (0, seed_1.range)(trunkRng, -0.06, 0.06));
+    const trunkLeanJit = Array.from({ length: 7 }, () => (0, seed_1.range)(trunkRng, -0.08, 0.08));
+    const trunkDxJit = Array.from({ length: 7 }, () => (0, seed_1.range)(trunkRng, -4, 4));
     const ageYears = Math.max(0, (Date.parse(metrics.fetchedAt) - Date.parse(metrics.createdAt)) / (DAY_MS * 365.25));
     const activity = sat(Math.log10(metrics.totalContributions + 1) / 4.5); // ~30k commits -> 1.0
     const cv = metrics.weeklyCv ?? 1.0;

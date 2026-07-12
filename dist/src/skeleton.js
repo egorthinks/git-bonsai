@@ -25,8 +25,10 @@ function buildSkeleton(dna, rng) {
     // sekijoju: the trunk starts on top of a rock; roots bridge down to the soil
     const rockH = dna.rock ? (0, seed_1.clamp)(12 + dna.baseRadius, 14, 24) : 0;
     const baseY = exports.GROUND_Y - rockH;
-    // per-trunk S-curve phases (drawn up front so trunk count can't shift the stream)
-    const sPhases = Array.from({ length: 7 }, () => rng() * Math.PI * 2);
+    // the first trunk's S-phase comes from the main stream (exactly as it always
+    // did — existing trees must keep their shape); extra trunks get their own
+    const auxRng = (0, seed_1.makeRng)(dna.seedKey + '|trunks');
+    const sPhases = [rng() * Math.PI * 2, ...Array.from({ length: 6 }, () => auxRng() * Math.PI * 2)];
     let sPhase = sPhases[0];
     let curLean = dna.lean; // the currently growing trunk's own lean
     // bunjin keeps its sparse crown near the apex only
