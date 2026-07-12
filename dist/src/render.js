@@ -76,7 +76,14 @@ function renderFrame(dna, skel, opts = {}) {
         (0, raster_1.fillCapsule)(aliveMask, skeleton_1.W, skeleton_1.H, skel.baseX, skel.groundY - 4, skel.baseX + side * spread, skel.groundY - 2, dna.baseRadius * 0.36, 1);
     }
     const shadeAlive = (0, shade_1.makeShader)(aliveMask, skeleton_1.W, skeleton_1.H, palette_1.TRUNK.length, {
-        depthMix: 0.38, depthScale: 0.13, noise, noiseAmp: species.barkAmp, noiseScaleX: 0.55, noiseScaleY: 0.09,
+        depthMix: 0.38, depthScale: 0.13,
+        bark: {
+            fn: (0, noise_1.makeBark)(noise),
+            amp: species.barkAmp * 2.4,
+            scaleX: 0.2,
+            scaleY: 0.07,
+            crack: 0.93 - species.barkAmp * 0.4, // rough species crack more
+        },
     });
     const shadeDead = (0, shade_1.makeShader)(deadMask, skeleton_1.W, skeleton_1.H, palette_1.DEAD.length, { depthMix: 0.35 });
     for (let y = 0; y < skeleton_1.H; y++) {

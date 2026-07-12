@@ -106,6 +106,13 @@ function makeShader(mask, w, h, rampLen, opts = {}) {
         if (opts.noise && nAmp > 0) {
             t += opts.noise(x * (opts.noiseScaleX ?? 0.3), y * (opts.noiseScaleY ?? 0.3)) * nAmp;
         }
+        if (opts.bark) {
+            const b = opts.bark.fn(x, y, opts.bark.scaleX, opts.bark.scaleY);
+            // deep fissures along ridge crests, but not right at the keyline edge
+            if (b > opts.bark.crack && dist[i] > 1.6)
+                return 0;
+            t += (b - 0.45) * opts.bark.amp;
+        }
         const v = t * (rampLen - 1) + bayer(x, y) * 0.9;
         return Math.max(0, Math.min(rampLen - 1, Math.round(v)));
     };

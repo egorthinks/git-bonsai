@@ -1,6 +1,6 @@
 import { BonsaiDNA } from './types';
 import { makeRng, clamp } from './seed';
-import { makeSimplex, Noise2 } from './noise';
+import { makeSimplex, makeBark, Noise2 } from './noise';
 import { Skeleton, W, H } from './skeleton';
 import {
   Frame, fillCapsule,
@@ -98,7 +98,14 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
   }
 
   const shadeAlive = makeShader(aliveMask, W, H, TRUNK.length, {
-    depthMix: 0.38, depthScale: 0.13, noise, noiseAmp: species.barkAmp, noiseScaleX: 0.55, noiseScaleY: 0.09,
+    depthMix: 0.38, depthScale: 0.13,
+    bark: {
+      fn: makeBark(noise),
+      amp: species.barkAmp * 2.4,
+      scaleX: 0.2,
+      scaleY: 0.07,
+      crack: 0.93 - species.barkAmp * 0.4, // rough species crack more
+    },
   });
   const shadeDead = makeShader(deadMask, W, H, DEAD.length, { depthMix: 0.35 });
   for (let y = 0; y < H; y++) {
