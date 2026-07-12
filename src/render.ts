@@ -7,7 +7,7 @@ import {
   CLS_WOOD, CLS_DEAD, CLS_POT, CLS_SOIL,
 } from './raster';
 import { makeShader, bayer } from './shade';
-import { TRUNK, DEAD, POT, SOIL, OUTLINE } from './palette';
+import { TRUNK, DEAD, POT, SOIL, OUTLINE, SPECIES } from './palette';
 import { drawFoliage, drawPetals, outlinePass, Sway } from './foliage';
 
 export interface RenderOpts {
@@ -22,11 +22,12 @@ function ease(v: number): number {
   return t * t * (3 - 2 * t);
 }
 
-/** Compose one 192x192 indexed frame: pot -> wood -> foliage -> keyline. */
+/** Compose one 256x256 indexed frame: wood -> pot -> foliage -> keyline. */
 export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {}): Frame {
   const t = opts.growthT ?? 1;
   const phase = opts.windPhase ?? null;
   const frame = new Frame(W, H);
+  const species = SPECIES[dna.species];
   // fresh streams per frame so animation frames stay coherent (no per-frame jitter)
   const rng = makeRng(dna.seedKey + '|frame');
   const noise = makeSimplex(makeRng(dna.seedKey + '|noise'));
@@ -46,6 +47,7 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
   const aliveMask = new Uint8Array(W * H);
   const deadMask = new Uint8Array(W * H);
   const maturity = 0.4 + 0.6 * t;
+  const windSign = Math.sign(dna.lean) || 1;
   for (const s of skel.segs) {
     if (s.birth > t) continue;
     const rEase = 0.3 + 0.7 * ease((t - s.birth) * 8);
@@ -54,9 +56,35 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
       s.dead ? deadMask : aliveMask, W, H,
       sway(s.ax, s.ay), s.ay, sway(s.bx, s.by), s.by, r, 1,
     );
+    // shari: a pale strip of deadwood along the lower trunk's shaded side
+    if (dna.shari && !s.twig && s.order <= 1 && s.birth < 0.3 && r > 2.5) {
+      const pxv = s.by - s.ay;
+      const pyv = -(s.bx - s.ax);
+      const L = Math.hypot(pxv, pyv) || 1;
+      const off = (r * 0.55) * -windSign;
+      fillCapsule(
+        deadMask, W, H,
+        sway(s.ax, s.ay) + (pxv / L) * off, s.ay + (pyv / L) * off,
+        sway(s.bx, s.by) + (pxv / L) * off, s.by + (pyv / L) * off,
+        r * 0.3, 1,
+      );
+    }
   }
+
+  // nebari: root buttresses flaring at the soil line, one pair per flare step
+  for (let i = 0; i < dna.rootFlare * 2; i++) {
+    const side = i % 2 === 0 ? 1 : -1;
+    const spread = dna.baseRadius * (1.15 + 0.4 * Math.floor(i / 2)) * t;
+    fillCapsule(
+      aliveMask, W, H,
+      skel.baseX, skel.groundY - 4,
+      skel.baseX + side * spread, skel.groundY - 2,
+      dna.baseRadius * 0.36, 1,
+    );
+  }
+
   const shadeAlive = makeShader(aliveMask, W, H, TRUNK.length, {
-    depthMix: 0.4, noise, noiseAmp: 0.12, noiseScaleX: 0.5, noiseScaleY: 0.12,
+    depthMix: 0.4, noise, noiseAmp: species.barkAmp, noiseScaleX: 0.5, noiseScaleY: 0.12,
   });
   const shadeDead = makeShader(deadMask, W, H, DEAD.length, { depthMix: 0.35 });
   for (let y = 0; y < H; y++) {
@@ -65,6 +93,24 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
       if (a >= 0) frame.set(x, y, TRUNK[a], CLS_WOOD);
       const d = shadeDead(x, y);
       if (d >= 0) frame.set(x, y, DEAD[d], CLS_DEAD);
+    }
+  }
+
+  // uro: a small hollow in the trunk — the mark of coming back after 2+ years
+  if (dna.uro && t > 0.5) {
+    const trunk = skel.segs.filter((s) => !s.twig && s.order <= 1);
+    if (trunk.length > 4) {
+      const seg = trunk[Math.floor(trunk.length * 0.25)];
+      const ux = Math.round(sway((seg.ax + seg.bx) / 2, (seg.ay + seg.by) / 2));
+      const uy = Math.round((seg.ay + seg.by) / 2);
+      if (frame.clsAt(ux, uy) === CLS_WOOD) {
+        for (let oy = -2; oy <= 2; oy++) {
+          for (let ox = -1; ox <= 1; ox++) {
+            if (ox * ox + (oy * oy) / 2.5 > 1.6) continue;
+            frame.set(ux + ox, uy + oy, oy === 2 ? DEAD[2] : OUTLINE, CLS_WOOD);
+          }
+        }
+      }
     }
   }
 

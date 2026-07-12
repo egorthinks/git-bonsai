@@ -26,7 +26,7 @@ function generate(metrics, opts = {}) {
     const dna = (0, dna_1.deriveDna)(metrics, rng);
     const skel = (0, skeleton_1.buildSkeleton)(dna, rng);
     (0, thickness_1.applyThickness)(skel, dna);
-    const palette = (0, palette_1.buildPalette)(dna.primaryPalette, dna.secondaryPalette);
+    const palette = (0, palette_1.buildPalette)(dna.palettes);
     const still = (0, render_1.renderFrame)(dna, skel, { growthT: 1, windPhase: null });
     const wind = (0, animate_1.windFrames)(dna, skel, opts.windFrameCount ?? 24);
     const growth = (0, animate_1.growthFrames)(dna, skel, opts.growthFrameCount ?? 44);

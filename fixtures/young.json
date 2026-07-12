@@ -4,17 +4,89 @@
   "fetchedAt": "2026-07-01",
   "totalContributions": 310,
   "topLanguages": [
-    { "name": "JavaScript", "ratio": 0.7 },
-    { "name": "HTML", "ratio": 0.2 }
+    {
+      "name": "JavaScript",
+      "ratio": 0.7
+    },
+    {
+      "name": "HTML",
+      "ratio": 0.2
+    }
   ],
   "epochLanguages": [
-    { "epoch": 0, "lang": "JavaScript" },
-    { "epoch": 1, "lang": "JavaScript" }
+    {
+      "epoch": 0,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 2,
+      "lang": "JavaScript"
+    }
   ],
   "currentStreak": 3,
   "maxStreak": 12,
   "longestGapDays": 40,
   "gapsOver60d": 0,
   "weekendRatio": 0.38,
-  "potWeeks": [0,0,1,0,0,0,1,1,0,0,0,1,2,1,0,0,1,0,0,0,1,1,0,0,1,2,1,0,0,0,1,0,0,1,1,0,0,0,1,2,1,0,0,1,0,0,1,1,0,0,1,1]
+  "potWeeks": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    1,
+    2,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    2,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    1,
+    2,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1
+  ],
+  "weeklyCv": 1.4,
+  "burstiness": 0.45,
+  "repoCount": 3
 }

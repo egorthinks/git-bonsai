@@ -145,17 +145,34 @@ function normalize(
     potWeeks.push(total >= 25 ? 4 : total >= 12 ? 3 : total >= 5 ? 2 : total >= 1 ? 1 : 0);
   }
 
-  // language epochs: repos created in the older vs newer half of the account
-  const mid = (Date.parse(createdAt) + now.getTime()) / 2;
-  const older = new Map<string, number>();
-  const newer = new Map<string, number>();
+  // rhythm signals for style selection: weekly variance and burstiness
+  const firstActive = days.findIndex((d) => d.count > 0);
+  const activeDays = firstActive >= 0 ? days.slice(firstActive) : days;
+  const weeks: number[] = [];
+  for (let w = 0; w + 7 <= activeDays.length; w += 7) {
+    weeks.push(activeDays.slice(w, w + 7).reduce((s, d) => s + d.count, 0));
+  }
+  const weekMean = weeks.length > 0 ? weeks.reduce((s, v) => s + v, 0) / weeks.length : 0;
+  const weekStd = weeks.length > 0
+    ? Math.sqrt(weeks.reduce((s, v) => s + (v - weekMean) ** 2, 0) / weeks.length)
+    : 0;
+  const weeklyCv = weekMean > 0 ? weekStd / weekMean : 1;
+  const sorted = [...weeks].sort((a, b) => b - a);
+  const topN = Math.max(1, Math.floor(sorted.length * 0.1));
+  const topSum = sorted.slice(0, topN).reduce((s, v) => s + v, 0);
+  const burstiness = totalContributions > 0 ? topSum / totalContributions : 0;
+
+  // language epochs: repos created in each third of the account's life
+  const created = Date.parse(createdAt);
+  const third = (now.getTime() - created) / 3;
+  const buckets = [new Map<string, number>(), new Map<string, number>(), new Map<string, number>()];
   const overall = new Map<string, number>();
   for (const repo of repos) {
-    const bucket = Date.parse(repo.createdAt) < mid ? older : newer;
+    const idx = Math.min(2, Math.max(0, Math.floor((Date.parse(repo.createdAt) - created) / third)));
     for (const edge of repo.languages.edges) {
       // log-damped bytes: one huge repo shouldn't drown several small ones
       const weight = Math.log2(1 + edge.size / 1024);
-      bucket.set(edge.node.name, (bucket.get(edge.node.name) ?? 0) + weight);
+      buckets[idx].set(edge.node.name, (buckets[idx].get(edge.node.name) ?? 0) + weight);
       overall.set(edge.node.name, (overall.get(edge.node.name) ?? 0) + weight);
     }
   }
@@ -168,10 +185,14 @@ function normalize(
     .map(([name, size]) => ({ name, ratio: size / totalSize }));
 
   const epochLanguages: Metrics['epochLanguages'] = [];
-  const lang0 = top(older);
-  const lang1 = top(newer) ?? lang0;
-  if (lang0) epochLanguages.push({ epoch: 0, lang: lang0 });
-  if (lang1) epochLanguages.push({ epoch: 1, lang: lang1 });
+  let prev: string | null = null;
+  ([0, 1, 2] as const).forEach((e) => {
+    const langE = top(buckets[e]) ?? prev ?? top(overall);
+    if (langE) {
+      epochLanguages.push({ epoch: e, lang: langE });
+      prev = langE;
+    }
+  });
 
   return {
     username,
@@ -186,6 +207,9 @@ function normalize(
     gapsOver60d,
     weekendRatio,
     potWeeks,
+    weeklyCv,
+    burstiness,
+    repoCount: repos.length,
   };
 }
 
@@ -207,19 +231,27 @@ export function synthMetrics(username: string): Metrics {
   const langs = ['TypeScript', 'JavaScript', 'Python', 'Rust', 'Go', 'Ruby', 'Java', 'C++'];
   const lang0 = pick(rng, langs);
   const lang1 = rng() < 0.4 ? pick(rng, langs) : lang0;
+  const lang2 = rng() < 0.4 ? pick(rng, langs) : lang1;
   const maxStreak = Math.floor(rng() * rng() * 400);
   return {
     username,
     createdAt,
     fetchedAt: fetched,
     totalContributions: Math.floor(50 + activity * activity * 30000 * (ageYears / 6)),
-    topLanguages: [{ name: lang1, ratio: 0.6 }, { name: lang0, ratio: 0.3 }],
-    epochLanguages: [{ epoch: 0, lang: lang0 }, { epoch: 1, lang: lang1 }],
+    topLanguages: [{ name: lang2, ratio: 0.6 }, { name: lang0, ratio: 0.3 }],
+    epochLanguages: [
+      { epoch: 0, lang: lang0 },
+      { epoch: 1, lang: lang1 },
+      { epoch: 2, lang: lang2 },
+    ],
     currentStreak: Math.floor(rng() * 30),
     maxStreak,
     longestGapDays: Math.floor(rng() * 300),
     gapsOver60d: Math.floor(rng() * 4),
     weekendRatio: clamp(rng() * 0.5, 0, 0.5),
     potWeeks: Array.from({ length: 52 }, () => Math.floor(rng() * 5)),
+    weeklyCv: 0.4 + rng() * 1.4,
+    burstiness: rng() * 0.7,
+    repoCount: 1 + Math.floor(rng() * 20),
   };
 }

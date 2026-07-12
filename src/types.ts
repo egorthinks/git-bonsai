@@ -8,8 +8,8 @@ export interface Metrics {
   totalContributions: number;
   /** Overall top languages, sorted by ratio desc. */
   topLanguages: { name: string; ratio: number }[];
-  /** Dominant language of the older (epoch 0) and newer (epoch 1) half of the account. */
-  epochLanguages: { epoch: 0 | 1; lang: string }[];
+  /** Dominant language of each third of the account's life (0 = oldest). */
+  epochLanguages: { epoch: 0 | 1 | 2; lang: string }[];
   currentStreak: number;
   maxStreak: number;
   longestGapDays: number;
@@ -19,14 +19,37 @@ export interface Metrics {
   weekendRatio: number;
   /** Last 52 weeks as activity levels 0..4 (oldest first) — becomes the pot's soil mosaic. */
   potWeeks: number[];
+  /** Coefficient of variation of weekly activity (low = metronome, high = erratic). */
+  weeklyCv?: number;
+  /** Share of all contributions landing in the top 10% most active weeks (high = storms). */
+  burstiness?: number;
+  /** Number of owned, non-fork repositories. */
+  repoCount?: number;
 }
 
-export type Style = 'formal' | 'slanted' | 'cascade';
+/**
+ * Trunk styles, named after the bonsai tradition:
+ * formal = chokkan, slanted = shakan, cascade = kengai,
+ * han-kengai = semi-cascade, bunjin = literati, windswept = fukinagashi,
+ * broom = hokidachi.
+ */
+export type Style =
+  | 'formal'
+  | 'slanted'
+  | 'han-kengai'
+  | 'cascade'
+  | 'bunjin'
+  | 'windswept'
+  | 'broom';
+
+/** Species archetypes: each bundles crown shape, leaf stamp and bark texture. */
+export type SpeciesId = 'pine' | 'maple' | 'cherry' | 'juniper' | 'elm';
 
 /** The tree "genotype": every knob the renderer needs, derived from metrics + seeded PRNG. */
 export interface BonsaiDNA {
   seedKey: string;
   style: Style;
+  species: SpeciesId;
   /** Trunk lean in radians; positive leans right. */
   lean: number;
   /** Max branching order (recursion depth), 3..6. */
@@ -39,14 +62,22 @@ export interface BonsaiDNA {
   branchChance: number;
   /** Twig/leaf richness (0..1). */
   foliage: number;
-  primaryPalette: string;
-  secondaryPalette: string | null;
-  /** birth-time fraction that separates epoch-0 wood from epoch-1 wood. */
-  epochSplit: number;
+  /** Leaf ramp language per epoch (0 = oldest third of the account's life). */
+  palettes: [string, string, string];
+  /** Birth-time fractions separating the three wood/canopy epochs. */
+  epochSplits: [number, number];
   /** Number of blossom clusters earned via streak milestones. */
   flowers: number;
   /** Fraction of foliage pads turned into deadwood (jin) by inactivity gaps. */
   deadRatio: number;
+  /** Massive-trunk class for extreme veterans. */
+  sumo: boolean;
+  /** Number of visible root buttresses (nebari), from repo breadth. */
+  rootFlare: number;
+  /** Pale deadwood strip along the trunk — one gap longer than a year. */
+  shari: boolean;
+  /** Hollow in the trunk — returned after 2+ years of silence. */
+  uro: boolean;
   potWeeks: number[];
   ageYears: number;
 }
