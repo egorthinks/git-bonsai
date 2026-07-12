@@ -52,10 +52,24 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
     if (s.birth > t) continue;
     const rEase = 0.3 + 0.7 * ease((t - s.birth) * 8);
     const r = s.twig ? s.radius : s.radius * rEase * maturity;
-    fillCapsule(
-      s.dead ? deadMask : aliveMask, W, H,
-      sway(s.ax, s.ay), s.ay, sway(s.bx, s.by), s.by, r, 1,
-    );
+    const mask = s.dead ? deadMask : aliveMask;
+    const ax = sway(s.ax, s.ay);
+    const bx = sway(s.bx, s.by);
+    if (!s.twig && r > 3.5) {
+      // fluted trunk: a union of offset lobes gives thick wood the grooves,
+      // knobs and muscle of real bark instead of a smooth sausage
+      const pxv = s.by - s.ay;
+      const pyv = -(bx - ax);
+      const L = Math.hypot(pxv, pyv) || 1;
+      const wob = 0.32 + 0.22 * noise((s.ax + s.bx) * 0.11, (s.ay + s.by) * 0.11);
+      const ox = (pxv / L) * r * wob;
+      const oy = (pyv / L) * r * wob;
+      fillCapsule(mask, W, H, ax + ox, s.ay + oy, bx + ox, s.by + oy, r * 0.62, 1);
+      fillCapsule(mask, W, H, ax - ox, s.ay - oy, bx - ox, s.by - oy, r * 0.62, 1);
+      fillCapsule(mask, W, H, ax, s.ay, bx, s.by, r * 0.85, 1);
+    } else {
+      fillCapsule(mask, W, H, ax, s.ay, bx, s.by, r, 1);
+    }
     // shari: a pale strip of deadwood along the lower trunk's shaded side
     if (dna.shari && !s.twig && s.order <= 1 && s.birth < 0.3 && r > 2.5) {
       const pxv = s.by - s.ay;
@@ -84,7 +98,7 @@ export function renderFrame(dna: BonsaiDNA, skel: Skeleton, opts: RenderOpts = {
   }
 
   const shadeAlive = makeShader(aliveMask, W, H, TRUNK.length, {
-    depthMix: 0.4, noise, noiseAmp: species.barkAmp, noiseScaleX: 0.5, noiseScaleY: 0.12,
+    depthMix: 0.38, depthScale: 0.13, noise, noiseAmp: species.barkAmp, noiseScaleX: 0.55, noiseScaleY: 0.09,
   });
   const shadeDead = makeShader(deadMask, W, H, DEAD.length, { depthMix: 0.35 });
   for (let y = 0; y < H; y++) {

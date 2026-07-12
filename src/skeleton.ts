@@ -240,7 +240,7 @@ export function buildSkeleton(dna: BonsaiDNA, rng: Rng): Skeleton {
     const birth = parentSeg ? parentSeg.birth + 0.05 : 0.5;
     const dead = deadSet.has(i);
     const epoch = parentSeg ? parentSeg.epoch : 2;
-    const padR = (8 + dna.foliage * 10.5) * range(rng, 0.8, 1.2) * (dna.style === 'bunjin' ? 0.8 : 1);
+    const padR = (7 + dna.foliage * 8.5) * range(rng, 0.8, 1.2) * (dna.style === 'bunjin' ? 0.8 : 1);
     const tips = growTwigs(segs, site, dead, birth, padR, dna, rng);
     pads.push({ x: site.x, y: site.y, r: padR, birth: Math.min(birth, 0.95), dead, epoch, tips });
   });

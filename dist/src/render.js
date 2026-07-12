@@ -41,7 +41,25 @@ function renderFrame(dna, skel, opts = {}) {
             continue;
         const rEase = 0.3 + 0.7 * ease((t - s.birth) * 8);
         const r = s.twig ? s.radius : s.radius * rEase * maturity;
-        (0, raster_1.fillCapsule)(s.dead ? deadMask : aliveMask, skeleton_1.W, skeleton_1.H, sway(s.ax, s.ay), s.ay, sway(s.bx, s.by), s.by, r, 1);
+        const mask = s.dead ? deadMask : aliveMask;
+        const ax = sway(s.ax, s.ay);
+        const bx = sway(s.bx, s.by);
+        if (!s.twig && r > 3.5) {
+            // fluted trunk: a union of offset lobes gives thick wood the grooves,
+            // knobs and muscle of real bark instead of a smooth sausage
+            const pxv = s.by - s.ay;
+            const pyv = -(bx - ax);
+            const L = Math.hypot(pxv, pyv) || 1;
+            const wob = 0.32 + 0.22 * noise((s.ax + s.bx) * 0.11, (s.ay + s.by) * 0.11);
+            const ox = (pxv / L) * r * wob;
+            const oy = (pyv / L) * r * wob;
+            (0, raster_1.fillCapsule)(mask, skeleton_1.W, skeleton_1.H, ax + ox, s.ay + oy, bx + ox, s.by + oy, r * 0.62, 1);
+            (0, raster_1.fillCapsule)(mask, skeleton_1.W, skeleton_1.H, ax - ox, s.ay - oy, bx - ox, s.by - oy, r * 0.62, 1);
+            (0, raster_1.fillCapsule)(mask, skeleton_1.W, skeleton_1.H, ax, s.ay, bx, s.by, r * 0.85, 1);
+        }
+        else {
+            (0, raster_1.fillCapsule)(mask, skeleton_1.W, skeleton_1.H, ax, s.ay, bx, s.by, r, 1);
+        }
         // shari: a pale strip of deadwood along the lower trunk's shaded side
         if (dna.shari && !s.twig && s.order <= 1 && s.birth < 0.3 && r > 2.5) {
             const pxv = s.by - s.ay;
@@ -58,7 +76,7 @@ function renderFrame(dna, skel, opts = {}) {
         (0, raster_1.fillCapsule)(aliveMask, skeleton_1.W, skeleton_1.H, skel.baseX, skel.groundY - 4, skel.baseX + side * spread, skel.groundY - 2, dna.baseRadius * 0.36, 1);
     }
     const shadeAlive = (0, shade_1.makeShader)(aliveMask, skeleton_1.W, skeleton_1.H, palette_1.TRUNK.length, {
-        depthMix: 0.4, noise, noiseAmp: species.barkAmp, noiseScaleX: 0.5, noiseScaleY: 0.12,
+        depthMix: 0.38, depthScale: 0.13, noise, noiseAmp: species.barkAmp, noiseScaleX: 0.55, noiseScaleY: 0.09,
     });
     const shadeDead = (0, shade_1.makeShader)(deadMask, skeleton_1.W, skeleton_1.H, palette_1.DEAD.length, { depthMix: 0.35 });
     for (let y = 0; y < skeleton_1.H; y++) {

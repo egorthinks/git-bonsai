@@ -82,6 +82,7 @@ function makeShader(mask, w, h, rampLen, opts = {}) {
     const lx = opts.lightX ?? -0.55;
     const ly = opts.lightY ?? -0.83;
     const depthMix = opts.depthMix ?? 0.45;
+    const depthScale = opts.depthScale ?? 0.3;
     const nAmp = opts.noiseAmp ?? 0;
     return (x, y) => {
         const i = y * w + x;
@@ -100,7 +101,7 @@ function makeShader(mask, w, h, rampLen, opts = {}) {
             ny /= nl;
         }
         const lambert = 0.5 + 0.5 * (nx * lx + ny * ly);
-        const depth = Math.min(1, dist[i] * 0.3);
+        const depth = Math.min(1, dist[i] * depthScale);
         let t = (1 - depthMix) * lambert + depthMix * depth;
         if (opts.noise && nAmp > 0) {
             t += opts.noise(x * (opts.noiseScaleX ?? 0.3), y * (opts.noiseScaleY ?? 0.3)) * nAmp;

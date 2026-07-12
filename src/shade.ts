@@ -73,6 +73,8 @@ export interface ShadeOpts {
   lightY?: number;
   /** How much SDF depth (vs lambert) drives the tone. */
   depthMix?: number;
+  /** How fast depth saturates: lower = the gradient reaches deeper (wide trunks). */
+  depthScale?: number;
   /** Extra per-pixel tone noise (bark/leaf texture). */
   noise?: Noise2;
   noiseAmp?: number;
@@ -92,6 +94,7 @@ export function makeShader(
   const lx = opts.lightX ?? -0.55;
   const ly = opts.lightY ?? -0.83;
   const depthMix = opts.depthMix ?? 0.45;
+  const depthScale = opts.depthScale ?? 0.3;
   const nAmp = opts.noiseAmp ?? 0;
 
   return (x: number, y: number): number => {
@@ -107,7 +110,7 @@ export function makeShader(
     const nl = Math.hypot(nx, ny);
     if (nl > 0.0001) { nx /= nl; ny /= nl; }
     const lambert = 0.5 + 0.5 * (nx * lx + ny * ly);
-    const depth = Math.min(1, dist[i] * 0.3);
+    const depth = Math.min(1, dist[i] * depthScale);
     let t = (1 - depthMix) * lambert + depthMix * depth;
     if (opts.noise && nAmp > 0) {
       t += opts.noise(x * (opts.noiseScaleX ?? 0.3), y * (opts.noiseScaleY ?? 0.3)) * nAmp;
