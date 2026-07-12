@@ -153,8 +153,10 @@ function normalize(
   for (const repo of repos) {
     const bucket = Date.parse(repo.createdAt) < mid ? older : newer;
     for (const edge of repo.languages.edges) {
-      bucket.set(edge.node.name, (bucket.get(edge.node.name) ?? 0) + edge.size);
-      overall.set(edge.node.name, (overall.get(edge.node.name) ?? 0) + edge.size);
+      // log-damped bytes: one huge repo shouldn't drown several small ones
+      const weight = Math.log2(1 + edge.size / 1024);
+      bucket.set(edge.node.name, (bucket.get(edge.node.name) ?? 0) + weight);
+      overall.set(edge.node.name, (overall.get(edge.node.name) ?? 0) + weight);
     }
   }
   const top = (m: Map<string, number>): string | null =>

@@ -30,7 +30,6 @@ function renderFrame(dna, skel, opts = {}) {
             const n = noise(x * 0.03 + Math.cos(phase) * 0.8, y * 0.03 + Math.sin(phase) * 0.8);
             return x + amp * (0.7 * wave + 0.55 * n);
         };
-    drawPot(frame, dna, skel, noise);
     // rasterize wood into alive/dead masks, then shade with SDF volume + dithering
     const aliveMask = new Uint8Array(skeleton_1.W * skeleton_1.H);
     const deadMask = new Uint8Array(skeleton_1.W * skeleton_1.H);
@@ -56,6 +55,9 @@ function renderFrame(dna, skel, opts = {}) {
                 frame.set(x, y, palette_1.DEAD[d], raster_1.CLS_DEAD);
         }
     }
+    // painter's order: the pot is drawn over the wood so the trunk sinks into
+    // the soil instead of spilling its rounded base over the pot body
+    drawPot(frame, dna, skel, noise);
     (0, foliage_1.drawFoliage)(frame, dna, skel, t, sway, rng, noise);
     (0, foliage_1.outlinePass)(frame, palette_1.OUTLINE);
     if (phase !== null)
