@@ -35,7 +35,7 @@ export interface GenerateOptions {
  * Same metrics in, bit-identical bytes out.
  */
 export function generate(metrics: Metrics, opts: GenerateOptions = {}): BonsaiOutput {
-  const scale = opts.scale ?? 4;
+  const scale = opts.scale ?? 3; // 256 native -> 768 display
   const seedKey = metrics.username.toLowerCase();
   const rng = makeRng(seedKey);
   const dna = deriveDna(metrics, rng);

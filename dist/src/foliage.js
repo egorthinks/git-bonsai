@@ -28,7 +28,7 @@ function drawFoliage(frame, dna, skel, t, sway, rng, noise) {
         for (const tip of pad.tips) {
             if (tip.birth > t)
                 continue;
-            const tr = (3.1 + dna.foliage * 1.6) * ease((t - tip.birth) / 0.1);
+            const tr = (3.6 + dna.foliage * 1.9) * ease((t - tip.birth) / 0.1);
             balls.push({ x: sway(tip.x, tip.y), y: tip.y, r: tr, epoch: pad.epoch });
         }
     }

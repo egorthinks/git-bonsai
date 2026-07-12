@@ -17,7 +17,7 @@ Options:
   --fixture  Path to a normalized metrics JSON (offline, reproducible)
   --synth    Fabricate deterministic demo metrics from a name (offline)
   --out      Output directory (default: output)
-  --scale    Integer upscale factor for SVG/PNG (default: 4)
+  --scale    Integer upscale factor for SVG/PNG (default: 3)
 
 Outputs: bonsai.svg, bonsai.png, bonsai.gif (wind), bonsai-growth.gif (timelapse)
 `;
@@ -36,7 +36,7 @@ async function main(): Promise<void> {
   const fixture = arg('fixture');
   const synth = arg('synth');
   const outDir = arg('out') ?? 'output';
-  const scale = Number(arg('scale') ?? 4);
+  const scale = Number(arg('scale') ?? 3);
 
   let metrics: Metrics;
   if (fixture) {

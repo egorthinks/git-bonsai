@@ -4,9 +4,9 @@ exports.GROUND_Y = exports.H = exports.W = void 0;
 exports.buildSkeleton = buildSkeleton;
 const seed_1 = require("./seed");
 const poisson_1 = require("./poisson");
-exports.W = 192;
-exports.H = 192;
-exports.GROUND_Y = 150;
+exports.W = 256;
+exports.H = 256;
+exports.GROUND_Y = 200;
 /**
  * Build the branch graph: a stochastic parametric L-system grows the trunk and
  * primary branches, then space colonization (Runions) grows fine twigs at each
@@ -15,7 +15,7 @@ exports.GROUND_Y = 150;
 function buildSkeleton(dna, rng) {
     const segs = [];
     const padSites = [];
-    const baseX = exports.W / 2 - Math.sign(dna.lean) * (dna.style === 'cascade' ? 18 : 8);
+    const baseX = exports.W / 2 - Math.sign(dna.lean) * (dna.style === 'cascade' ? 24 : 11);
     const sPhase = rng() * Math.PI * 2; // phase of the trunk's S-curve
     let clock = 0;
     const shapedAngle = (dir, order, traveled, totalLen) => {
@@ -38,7 +38,7 @@ function buildSkeleton(dna, rng) {
         return out;
     };
     const grow = (x, y, dir, len, order, parent, traveled) => {
-        if (len < 6.5 || order > dna.iterations) {
+        if (len < 8.5 || order > dna.iterations) {
             if (order >= 2)
                 padSites.push({ x, y, segIdx: parent, order });
             return;
@@ -54,16 +54,16 @@ function buildSkeleton(dna, rng) {
             pdir = shapedAngle(pdir, order, traveled, dna.trunkLen * 2.2);
             pdir += (0, seed_1.range)(rng, -0.22, 0.22) * (order === 0 ? 1.2 : 1); // trunk gets S-curves
             // keep the tree inside the canvas
-            const margin = 14;
+            const margin = 19;
             if (px < margin)
                 pdir += (Math.abs(angleDiff(0, pdir)) < 1.8 ? 0 : 0.3);
             if (px < margin && Math.cos(pdir) < 0)
                 pdir = mixAngle(pdir, 0, 0.5);
             if (px > exports.W - margin && Math.cos(pdir) > 0)
                 pdir = mixAngle(pdir, Math.PI, 0.5);
-            if (py < 18 && Math.sin(pdir) < 0)
+            if (py < 24 && Math.sin(pdir) < 0)
                 pdir = mixAngle(pdir, 0.2 * sideSign, 0.4);
-            if (py > exports.H - 8 && Math.sin(pdir) > 0)
+            if (py > exports.H - 10 && Math.sin(pdir) > 0)
                 pdir = mixAngle(pdir, -Math.PI / 2, 0.5);
             const sl = stepLen * (0, seed_1.range)(rng, 0.85, 1.15);
             const nx = px + Math.cos(pdir) * sl;
@@ -99,7 +99,7 @@ function buildSkeleton(dna, rng) {
     for (const s of segs)
         s.epoch = s.birth / 0.75 <= dna.epochSplit ? 0 : 1;
     // cap foliage pads: dense trees would otherwise explode twig counts
-    const maxPads = 34 + Math.round(dna.foliage * 26);
+    const maxPads = 45 + Math.round(dna.foliage * 35);
     let sites = padSites;
     if (sites.length > maxPads) {
         const step = sites.length / maxPads;
@@ -117,7 +117,7 @@ function buildSkeleton(dna, rng) {
         const birth = parentSeg ? parentSeg.birth + 0.05 : 0.5;
         const dead = deadSet.has(i);
         const epoch = parentSeg ? parentSeg.epoch : 1;
-        const padR = (6 + dna.foliage * 8) * (0, seed_1.range)(rng, 0.8, 1.2);
+        const padR = (8 + dna.foliage * 10.5) * (0, seed_1.range)(rng, 0.8, 1.2);
         const tips = growTwigs(segs, site, dead, birth, padR, dna, rng);
         pads.push({ x: site.x, y: site.y, r: padR, birth: Math.min(birth, 0.95), dead, epoch, tips });
     });
