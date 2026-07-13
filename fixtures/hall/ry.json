@@ -1,0 +1,107 @@
+{
+  "username": "ry",
+  "createdAt": "2008-01-29T08:50:34Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 26332,
+  "topLanguages": [
+    {
+      "name": "TypeScript",
+      "ratio": 0.1582186411850468
+    },
+    {
+      "name": "C++",
+      "ratio": 0.1425705354133075
+    },
+    {
+      "name": "JavaScript",
+      "ratio": 0.1265586908761528
+    },
+    {
+      "name": "Java",
+      "ratio": 0.08895288394524582
+    },
+    {
+      "name": "C#",
+      "ratio": 0.08779350138914996
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "TypeScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "C++"
+    },
+    {
+      "epoch": 2,
+      "lang": "TypeScript"
+    }
+  ],
+  "currentStreak": 25,
+  "maxStreak": 181,
+  "longestGapDays": 451,
+  "gapsOver60d": 10,
+  "weekendRatio": 0.17298344219960504,
+  "potWeeks": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    3,
+    3,
+    3,
+    2,
+    4,
+    1,
+    3,
+    3,
+    1,
+    2,
+    3,
+    0,
+    3,
+    2,
+    2,
+    1,
+    3,
+    3,
+    2,
+    2,
+    4,
+    3,
+    3,
+    3,
+    4,
+    4,
+    3,
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "weeklyCv": 1.5757743040956849,
+  "burstiness": 0.47197326446908705,
+  "repoCount": 27,
+  "topRepoShare": 0.2702993801277795,
+  "flagshipCount": 1,
+  "isOrg": false
+}

@@ -1,0 +1,107 @@
+{
+  "username": "fabpot",
+  "createdAt": "2009-01-17T13:42:51Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 264440,
+  "topLanguages": [
+    {
+      "name": "PHP",
+      "ratio": 0.3745087342665836
+    },
+    {
+      "name": "Twig",
+      "ratio": 0.1241254087247383
+    },
+    {
+      "name": "Python",
+      "ratio": 0.1040301741145226
+    },
+    {
+      "name": "Go",
+      "ratio": 0.10001900590066061
+    },
+    {
+      "name": "SCSS",
+      "ratio": 0.09344819727066807
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Python"
+    },
+    {
+      "epoch": 1,
+      "lang": "PHP"
+    },
+    {
+      "epoch": 2,
+      "lang": "PHP"
+    }
+  ],
+  "currentStreak": 172,
+  "maxStreak": 172,
+  "longestGapDays": 75,
+  "gapsOver60d": 3,
+  "weekendRatio": 0.21978142489789745,
+  "potWeeks": [
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    1,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "weeklyCv": 0.8415450250775663,
+  "burstiness": 0.2866170019664196,
+  "repoCount": 10,
+  "topRepoShare": 0.4617210509798559,
+  "flagshipCount": 1,
+  "isOrg": false
+}

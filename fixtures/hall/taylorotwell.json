@@ -1,0 +1,107 @@
+{
+  "username": "taylorotwell",
+  "createdAt": "2010-11-01T20:15:30Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 172201,
+  "topLanguages": [
+    {
+      "name": "PHP",
+      "ratio": 0.5655681465120285
+    },
+    {
+      "name": "Blade",
+      "ratio": 0.225914500651076
+    },
+    {
+      "name": "JavaScript",
+      "ratio": 0.11592596866958998
+    },
+    {
+      "name": "Shell",
+      "ratio": 0.04055428630666359
+    },
+    {
+      "name": "HTML",
+      "ratio": 0.02890759884550562
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "PHP"
+    },
+    {
+      "epoch": 1,
+      "lang": "PHP"
+    },
+    {
+      "epoch": 2,
+      "lang": "PHP"
+    }
+  ],
+  "currentStreak": 1,
+  "maxStreak": 132,
+  "longestGapDays": 153,
+  "gapsOver60d": 2,
+  "weekendRatio": 0.12857068193564497,
+  "potWeeks": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "weeklyCv": 0.9040201454754672,
+  "burstiness": 0.2993943124604387,
+  "repoCount": 7,
+  "topRepoShare": 0.18392845753867168,
+  "flagshipCount": 1,
+  "isOrg": false
+}

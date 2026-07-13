@@ -1,0 +1,107 @@
+{
+  "username": "mojombo",
+  "createdAt": "2007-10-20T05:24:19Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 6218,
+  "topLanguages": [
+    {
+      "name": "Ruby",
+      "ratio": 0.3514538138881019
+    },
+    {
+      "name": "Erlang",
+      "ratio": 0.17728577401515752
+    },
+    {
+      "name": "JavaScript",
+      "ratio": 0.14412515359619868
+    },
+    {
+      "name": "C",
+      "ratio": 0.08297954907461136
+    },
+    {
+      "name": "C++",
+      "ratio": 0.0570464905022424
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Ruby"
+    },
+    {
+      "epoch": 1,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 2,
+      "lang": "JavaScript"
+    }
+  ],
+  "currentStreak": 0,
+  "maxStreak": 15,
+  "longestGapDays": 79,
+  "gapsOver60d": 10,
+  "weekendRatio": 0.19797362495979415,
+  "potWeeks": [
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    1,
+    3,
+    0,
+    1,
+    1,
+    3,
+    4,
+    1,
+    2,
+    2,
+    0,
+    0,
+    1,
+    1,
+    2,
+    4,
+    4,
+    3,
+    2,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "weeklyCv": 2.218720008811013,
+  "burstiness": 0.5471212608555805,
+  "repoCount": 41,
+  "topRepoShare": 0.17195536836191452,
+  "flagshipCount": 1,
+  "isOrg": false
+}

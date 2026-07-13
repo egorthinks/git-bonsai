@@ -1,0 +1,107 @@
+{
+  "username": "tj",
+  "createdAt": "2008-09-18T22:37:28Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 37598,
+  "topLanguages": [
+    {
+      "name": "JavaScript",
+      "ratio": 0.5290836816954777
+    },
+    {
+      "name": "Go",
+      "ratio": 0.1727659105512938
+    },
+    {
+      "name": "Shell",
+      "ratio": 0.06354173251913922
+    },
+    {
+      "name": "Ruby",
+      "ratio": 0.0538890462117417
+    },
+    {
+      "name": "CSS",
+      "ratio": 0.039160719237652325
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "Go"
+    },
+    {
+      "epoch": 2,
+      "lang": "Go"
+    }
+  ],
+  "currentStreak": 0,
+  "maxStreak": 55,
+  "longestGapDays": 1047,
+  "gapsOver60d": 4,
+  "weekendRatio": 0.15944997074312464,
+  "potWeeks": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "weeklyCv": 1.7458655799354421,
+  "burstiness": 0.5316240225543912,
+  "repoCount": 100,
+  "topRepoShare": 0.043973847999347025,
+  "flagshipCount": 1,
+  "isOrg": false
+}

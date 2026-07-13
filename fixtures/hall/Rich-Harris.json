@@ -1,0 +1,107 @@
+{
+  "username": "Rich-Harris",
+  "createdAt": "2011-10-31T10:36:05Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 46522,
+  "topLanguages": [
+    {
+      "name": "JavaScript",
+      "ratio": 0.568588171068906
+    },
+    {
+      "name": "Svelte",
+      "ratio": 0.1250822910578618
+    },
+    {
+      "name": "TypeScript",
+      "ratio": 0.12112504969801255
+    },
+    {
+      "name": "HTML",
+      "ratio": 0.10558321128068948
+    },
+    {
+      "name": "CSS",
+      "ratio": 0.07199556279005963
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 2,
+      "lang": "Svelte"
+    }
+  ],
+  "currentStreak": 8,
+  "maxStreak": 54,
+  "longestGapDays": 88,
+  "gapsOver60d": 3,
+  "weekendRatio": 0.29454881561411805,
+  "potWeeks": [
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    2,
+    4,
+    4,
+    4,
+    4,
+    3,
+    3,
+    2,
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    2,
+    4,
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "weeklyCv": 1.0070649618813208,
+  "burstiness": 0.32410472464640383,
+  "repoCount": 100,
+  "topRepoShare": 0.034517145975850795,
+  "flagshipCount": 1,
+  "isOrg": false
+}

@@ -1,0 +1,107 @@
+{
+  "username": "shadcn",
+  "createdAt": "2009-09-08T17:49:59Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 20562,
+  "topLanguages": [
+    {
+      "name": "TypeScript",
+      "ratio": 0.3134636541794061
+    },
+    {
+      "name": "JavaScript",
+      "ratio": 0.2243741088127219
+    },
+    {
+      "name": "CSS",
+      "ratio": 0.17751320099103074
+    },
+    {
+      "name": "PHP",
+      "ratio": 0.14848786261588728
+    },
+    {
+      "name": "Ruby",
+      "ratio": 0.057819824096223944
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "CSS"
+    },
+    {
+      "epoch": 1,
+      "lang": "PHP"
+    },
+    {
+      "epoch": 2,
+      "lang": "TypeScript"
+    }
+  ],
+  "currentStreak": 1,
+  "maxStreak": 91,
+  "longestGapDays": 227,
+  "gapsOver60d": 7,
+  "weekendRatio": 0.18646046104464548,
+  "potWeeks": [
+    3,
+    4,
+    4,
+    4,
+    4,
+    2,
+    4,
+    4,
+    4,
+    3,
+    1,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    1,
+    4,
+    3,
+    3,
+    4,
+    4,
+    0,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    2,
+    4,
+    4,
+    3,
+    4,
+    3,
+    4,
+    4,
+    3
+  ],
+  "weeklyCv": 1.232260597310587,
+  "burstiness": 0.37608209318159713,
+  "repoCount": 100,
+  "topRepoShare": 0.06626229014759197,
+  "flagshipCount": 1,
+  "isOrg": false
+}

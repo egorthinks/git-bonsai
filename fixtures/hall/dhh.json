@@ -1,0 +1,91 @@
+{
+  "username": "dhh",
+  "createdAt": "2008-03-10T17:53:51Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 15068,
+  "topLanguages": [
+    {
+      "name": "Ruby",
+      "ratio": 1
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Ruby"
+    },
+    {
+      "epoch": 1,
+      "lang": "Ruby"
+    },
+    {
+      "epoch": 2,
+      "lang": "Ruby"
+    }
+  ],
+  "currentStreak": 4,
+  "maxStreak": 111,
+  "longestGapDays": 818,
+  "gapsOver60d": 9,
+  "weekendRatio": 0.25590655694186354,
+  "potWeeks": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    1,
+    4,
+    1,
+    4,
+    2
+  ],
+  "weeklyCv": 3.2527526656844863,
+  "burstiness": 0.7840456596761348,
+  "repoCount": 3,
+  "topRepoShare": 0.5197573063484032,
+  "flagshipCount": 2,
+  "isOrg": false
+}
