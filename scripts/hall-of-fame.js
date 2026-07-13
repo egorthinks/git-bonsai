@@ -83,7 +83,10 @@ async function main() {
     // summer pin: the hall is a stable exhibition, not a seasonal display
     const out = generate(metrics, { scale: 2, season: 'summer' });
     fs.writeFileSync(path.join(imgDir, login + '.png'), out.png);
-    entries.push({ login, caption, dna: out.dna, metrics });
+    // display width proportional to the cropped PNG (IHDR width) so every
+    // tree in the hall renders at the same pixel scale — big histories big
+    const width = Math.round(out.png.readUInt32BE(16) * 0.75);
+    entries.push({ login, caption, dna: out.dna, metrics, width });
     process.stdout.write(`rendered ${login}: ${out.dna.style} ${out.dna.species}\n`);
   }
 
@@ -93,11 +96,11 @@ async function main() {
     'hand — every trunk, scar and blossom is earned. Regenerate any time with',
     '`node scripts/hall-of-fame.js --token <PAT>` (metrics are cached under',
     '`fixtures/hall/`, so the gallery is reproducible bit-for-bit).', ''];
-  for (const { login, caption, dna, metrics } of entries) {
+  for (const { login, caption, dna, metrics, width } of entries) {
     const years = dna.ageYears.toFixed(0);
     md.push(`## [@${login}](https://github.com/${login})`, '',
       `*${caption}*`, '',
-      `<img src="assets/hall/${login}.png" width="384" alt="git-bonsai of ${login}" />`, '',
+      `<img src="assets/hall/${login}.png" width="${width}" alt="git-bonsai of ${login}" />`, '',
       `**${STYLE_JP[dna.style] ?? dna.style}** · ${SPECIES_NAME[dna.species] ?? dna.species} · ` +
       `${years} years · ${metrics.totalContributions.toLocaleString('en-US')} public contributions` +
       (dna.sumo ? ' · **sumo trunk**' : '') +

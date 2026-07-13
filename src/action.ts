@@ -70,6 +70,9 @@ async function run(): Promise<void> {
     const repo = process.env.GITHUB_REPOSITORY;
     const branch = process.env.GITHUB_REF_NAME ?? 'main';
     const img = `https://github.com/${repo}/raw/${branch}/${outDir}/bonsai.png`;
+    // half the native PNG width (IHDR) keeps pixel scale constant now that
+    // the canvas is cropped to the tree's real size
+    const imgW = Math.round(out.png.readUInt32BE(16) / 2);
     const text = encodeURIComponent(
       `My GitHub history grew a ${out.dna.style} ${out.dna.species} bonsai 🌳 #gitbonsai\n` +
       `https://github.com/${repo}`,
@@ -77,7 +80,7 @@ async function run(): Promise<void> {
     fs.appendFileSync(
       process.env.GITHUB_STEP_SUMMARY,
       `## 🌳 Your bonsai has been tended\n\n` +
-      `<img src="${img}" width="384" alt="git-bonsai of ${user}" />\n\n` +
+      `<img src="${img}" width="${imgW}" alt="git-bonsai of ${user}" />\n\n` +
       `**${out.dna.style}** · ${out.dna.species} · ${out.dna.sizeClass} pot` +
       `${out.dna.sumo ? ' · **sumo trunk**' : ''}${out.dna.flowers > 0 ? ` · ${out.dna.flowers} 🌸` : ''}\n\n` +
       `[Share on X](https://twitter.com/intent/tweet?text=${text}) · ` +

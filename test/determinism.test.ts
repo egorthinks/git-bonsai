@@ -82,6 +82,18 @@ test('seasons shift the leaves deterministically, keeping hue identity', () => {
   assert.ok(b > r, 'autumn must not turn a blue crown warm-brown');
 });
 
+test('the image box adapts to the tree: small bonsai, small canvas', () => {
+  const dims = (png: Buffer) => ({ w: png.readUInt32BE(16), h: png.readUInt32BE(20) });
+  const big = dims(generate(veteran()).png);
+  const small = dims(generate(young()).png);
+  assert.ok(small.h < big.h, `young tree should ship in a shorter box (${small.h} vs ${big.h})`);
+  assert.ok(small.w <= big.w, 'young tree should not be wider than the veteran');
+  assert.ok(big.w <= 256 * 3 && big.h <= 256 * 3, 'crop must never exceed the native stage');
+  // the wind gif shares the same crop box as the png (GIF header is little-endian)
+  const gif = generate(young()).gif;
+  assert.strictEqual(gif.readUInt16LE(6) * 3, small.w, 'gif and png must share one crop width');
+});
+
 test('runs fast enough for a CI budget', () => {
   const started = Date.now();
   generate(veteran());

@@ -10,7 +10,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Linus Torvalds — Linux, git*
 
-<img src="assets/hall/torvalds.png" width="384" alt="git-bonsai of torvalds" />
+<img src="assets/hall/torvalds.png" width="266" alt="git-bonsai of torvalds" />
 
 **shakan (slanting)** · pine (matsu) · 15 years · 35,933 public contributions · **sumo trunk** · 3 🌸
 
@@ -18,7 +18,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Guido van Rossum — Python*
 
-<img src="assets/hall/gvanrossum.png" width="384" alt="git-bonsai of gvanrossum" />
+<img src="assets/hall/gvanrossum.png" width="258" alt="git-bonsai of gvanrossum" />
 
 **shakan (slanting)** · maple (momiji) · 14 years · 8,096 public contributions · **sumo trunk** · 2 🌸
 
@@ -26,7 +26,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Salvatore Sanfilippo — Redis*
 
-<img src="assets/hall/antirez.png" width="384" alt="git-bonsai of antirez" />
+<img src="assets/hall/antirez.png" width="219" alt="git-bonsai of antirez" />
 
 **chokkan (formal upright)** · pine (matsu) · 17 years · 18,480 public contributions · **sumo trunk** · *shari* · 2 🌸
 
@@ -34,7 +34,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Dan Abramov — React, Redux*
 
-<img src="assets/hall/gaearon.png" width="384" alt="git-bonsai of gaearon" />
+<img src="assets/hall/gaearon.png" width="269" alt="git-bonsai of gaearon" />
 
 **fukinagashi (windswept)** · cherry (sakura) · 15 years · 77,857 public contributions · **sumo trunk** · 2 🌸
 
@@ -42,7 +42,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Evan You — Vue, Vite*
 
-<img src="assets/hall/yyx990803.png" width="384" alt="git-bonsai of yyx990803" />
+<img src="assets/hall/yyx990803.png" width="242" alt="git-bonsai of yyx990803" />
 
 **chokkan (formal upright)** · cherry (sakura) · 16 years · 54,560 public contributions · **sumo trunk** · 4 🌸
 
@@ -50,7 +50,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Sindre Sorhus — 1000+ npm packages*
 
-<img src="assets/hall/sindresorhus.png" width="384" alt="git-bonsai of sindresorhus" />
+<img src="assets/hall/sindresorhus.png" width="264" alt="git-bonsai of sindresorhus" />
 
 **shakan (slanting)** · cherry (sakura) · 17 years · 47,778 public contributions · **sumo trunk** · 3 🌸
 
@@ -58,7 +58,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Mitchell Hashimoto — Terraform, Vagrant, Ghostty*
 
-<img src="assets/hall/mitchellh.png" width="384" alt="git-bonsai of mitchellh" />
+<img src="assets/hall/mitchellh.png" width="231" alt="git-bonsai of mitchellh" />
 
 **shakan (slanting)** · pine (matsu) · 18 years · 60,001 public contributions · **sumo trunk** · 4 🌸
 
@@ -66,7 +66,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Andrej Karpathy — deep learning*
 
-<img src="assets/hall/karpathy.png" width="384" alt="git-bonsai of karpathy" />
+<img src="assets/hall/karpathy.png" width="276" alt="git-bonsai of karpathy" />
 
 **fukinagashi (windswept)** · maple (momiji) · 16 years · 4,601 public contributions · **sumo trunk** · 2 🌸
 
@@ -74,7 +74,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 *Claude — the gardener itself; its real work hides in Co-Authored-By trailers, so the calendar shows a bare literati with honorable scars*
 
-<img src="assets/hall/claude.png" width="384" alt="git-bonsai of claude" />
+<img src="assets/hall/claude.png" width="188" alt="git-bonsai of claude" />
 
 **bunjingi (literati)** · maple (momiji) · 17 years · 0 public contributions · *shari* · *uro*
 

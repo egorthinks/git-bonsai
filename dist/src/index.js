@@ -7,6 +7,7 @@ const dna_1 = require("./dna");
 const skeleton_1 = require("./skeleton");
 const thickness_1 = require("./thickness");
 const render_1 = require("./render");
+const raster_1 = require("./raster");
 const animate_1 = require("./animate");
 const palette_1 = require("./palette");
 const encode_1 = require("./encode");
@@ -33,11 +34,17 @@ function generate(metrics, opts = {}) {
     const still = (0, render_1.renderFrame)(dna, skel, { growthT: 1, windPhase: null });
     const wind = (0, animate_1.windFrames)(dna, skel, opts.windFrameCount ?? 24);
     const growth = (0, animate_1.growthFrames)(dna, skel, opts.growthFrameCount ?? 44);
+    // adaptive box: crop the fixed stage to the tree's real extent so a small
+    // bonsai ships in a small image instead of swimming in empty air. One box
+    // for all outputs, measured across every frame (wind sway, falling petals),
+    // so nothing ever pokes outside and all four files share the same framing.
+    const box = (0, raster_1.fitBox)([still, ...wind.frames, ...growth.frames]);
+    const crop = (f) => (0, raster_1.cropFrame)(f, box);
     return {
-        svg: (0, encode_1.frameToSvg)(still, palette, scale),
-        png: (0, encode_1.frameToPng)(still, palette, scale),
-        gif: (0, encode_1.framesToGif)(wind, palette),
-        growthGif: (0, encode_1.framesToGif)(growth, palette),
+        svg: (0, encode_1.frameToSvg)(crop(still), palette, scale),
+        png: (0, encode_1.frameToPng)(crop(still), palette, scale),
+        gif: (0, encode_1.framesToGif)({ frames: wind.frames.map(crop), delays: wind.delays }, palette),
+        growthGif: (0, encode_1.framesToGif)({ frames: growth.frames.map(crop), delays: growth.delays }, palette),
         dna,
     };
 }

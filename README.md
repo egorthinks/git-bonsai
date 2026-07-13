@@ -134,6 +134,9 @@ Then embed the tree in your `README.md`:
 <img src="output/bonsai-growth.gif" width="384" alt="my git-bonsai" />
 ```
 
+The images are auto-cropped to your tree's real size — a young bonsai ships
+in a small box with no empty sky above it, and the canvas grows as it grows.
+
 Proud of your tree? Add the badge and let visitors grow their own:
 
 [![grown with git-bonsai](https://img.shields.io/badge/🌳_grown_with-git--bonsai-2ea44f)](https://github.com/egorthinks/git-bonsai)
@@ -182,6 +185,7 @@ raster    Bresenham + scanline capsule fill → 256×256 indexed buffer
 shade     8SSEDT SDF volume → posterized light → Bayer dithering → keyline
 foliage   Poisson-disk (Bridson) leaves, simplex silhouette, blossoms
 animate   wind (sine + simplex, seamless loop) & growth timelapse
+frame     adaptive box: union bbox across all frames, cropped + padded
 encode    hand-rolled GIF89a (LZW) + PNG + SVG snapshot
 ```
 
