@@ -21,6 +21,7 @@ The current roster:
 | [@sindresorhus](https://github.com/sindresorhus) | Sindre Sorhus — 1000+ npm packages |
 | [@mitchellh](https://github.com/mitchellh) | Mitchell Hashimoto — Terraform, Vagrant, Ghostty |
 | [@karpathy](https://github.com/karpathy) | Andrej Karpathy — deep learning |
+| [@claude](https://github.com/claude) | Claude — the gardener itself (co-author of millions of commits) |
 
 ---
 

@@ -21,6 +21,7 @@ const ROSTER = [
   { login: 'sindresorhus', caption: 'Sindre Sorhus — 1000+ npm packages' },
   { login: 'mitchellh', caption: 'Mitchell Hashimoto — Terraform, Vagrant, Ghostty' },
   { login: 'karpathy', caption: 'Andrej Karpathy — deep learning' },
+  { login: 'claude', caption: 'Claude — the gardener itself (co-author of millions of commits)' },
 ];
 
 const STYLE_JP = {
