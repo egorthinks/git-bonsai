@@ -1,0 +1,107 @@
+{
+  "username": "sindresorhus",
+  "createdAt": "2009-12-20T22:57:02Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 47778,
+  "topLanguages": [
+    {
+      "name": "JavaScript",
+      "ratio": 0.4938106404508901
+    },
+    {
+      "name": "TypeScript",
+      "ratio": 0.24556802808386932
+    },
+    {
+      "name": "Swift",
+      "ratio": 0.08869003909281364
+    },
+    {
+      "name": "CSS",
+      "ratio": 0.05269337280059963
+    },
+    {
+      "name": "HTML",
+      "ratio": 0.04857411932716312
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 2,
+      "lang": "CSS"
+    }
+  ],
+  "currentStreak": 39,
+  "maxStreak": 97,
+  "longestGapDays": 214,
+  "gapsOver60d": 1,
+  "weekendRatio": 0.265415044581188,
+  "potWeeks": [
+    2,
+    1,
+    2,
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    2,
+    2,
+    3,
+    3,
+    3,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    3,
+    4,
+    4,
+    2,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "weeklyCv": 1.0562183796816755,
+  "burstiness": 0.3375402905102767,
+  "repoCount": 100,
+  "topRepoShare": 0.03688641988393883,
+  "flagshipCount": 1,
+  "isOrg": false
+}

@@ -1,0 +1,107 @@
+{
+  "username": "gvanrossum",
+  "createdAt": "2012-11-26T18:46:40Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 8096,
+  "topLanguages": [
+    {
+      "name": "Python",
+      "ratio": 0.42787542583661764
+    },
+    {
+      "name": "HTML",
+      "ratio": 0.17343447074951002
+    },
+    {
+      "name": "C",
+      "ratio": 0.1571716384187516
+    },
+    {
+      "name": "Makefile",
+      "ratio": 0.07268147614518736
+    },
+    {
+      "name": "Roff",
+      "ratio": 0.06256280617851218
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "HTML"
+    },
+    {
+      "epoch": 1,
+      "lang": "Python"
+    },
+    {
+      "epoch": 2,
+      "lang": "Python"
+    }
+  ],
+  "currentStreak": 0,
+  "maxStreak": 44,
+  "longestGapDays": 74,
+  "gapsOver60d": 1,
+  "weekendRatio": 0.1903409090909091,
+  "potWeeks": [
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1,
+    3,
+    3,
+    3,
+    2,
+    3,
+    3,
+    2,
+    2,
+    1,
+    0,
+    1,
+    2,
+    3,
+    1,
+    2,
+    1,
+    3,
+    1,
+    2,
+    3,
+    4,
+    3,
+    1,
+    1,
+    2,
+    1,
+    3,
+    1,
+    3,
+    3,
+    2,
+    2,
+    1,
+    1,
+    1,
+    0,
+    2,
+    1,
+    1,
+    1
+  ],
+  "weeklyCv": 0.9534508762199988,
+  "burstiness": 0.30101284584980237,
+  "repoCount": 12,
+  "topRepoShare": 0.3156620087788096,
+  "flagshipCount": 1,
+  "isOrg": false
+}

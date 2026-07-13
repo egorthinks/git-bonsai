@@ -1,0 +1,107 @@
+{
+  "username": "antirez",
+  "createdAt": "2009-03-21T22:29:53Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 18480,
+  "topLanguages": [
+    {
+      "name": "C",
+      "ratio": 0.47617831290610857
+    },
+    {
+      "name": "Python",
+      "ratio": 0.1449718258470172
+    },
+    {
+      "name": "Ruby",
+      "ratio": 0.047354738061223534
+    },
+    {
+      "name": "Tcl",
+      "ratio": 0.045108360824134115
+    },
+    {
+      "name": "Makefile",
+      "ratio": 0.043481375386981144
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "C"
+    },
+    {
+      "epoch": 1,
+      "lang": "C"
+    },
+    {
+      "epoch": 2,
+      "lang": "C"
+    }
+  ],
+  "currentStreak": 0,
+  "maxStreak": 31,
+  "longestGapDays": 488,
+  "gapsOver60d": 5,
+  "weekendRatio": 0.1156926406926407,
+  "potWeeks": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    0,
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    2,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    2,
+    1,
+    4,
+    4,
+    4,
+    3,
+    4,
+    3,
+    2,
+    0,
+    0,
+    0
+  ],
+  "weeklyCv": 1.1071881298585329,
+  "burstiness": 0.33544372294372293,
+  "repoCount": 100,
+  "topRepoShare": 0.07095827586811417,
+  "flagshipCount": 1,
+  "isOrg": false
+}

@@ -1,0 +1,107 @@
+{
+  "username": "karpathy",
+  "createdAt": "2010-04-10T17:55:32Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 4601,
+  "topLanguages": [
+    {
+      "name": "Python",
+      "ratio": 0.3513154744789026
+    },
+    {
+      "name": "Jupyter Notebook",
+      "ratio": 0.17191932561305825
+    },
+    {
+      "name": "HTML",
+      "ratio": 0.14455244553782745
+    },
+    {
+      "name": "JavaScript",
+      "ratio": 0.10070307860830033
+    },
+    {
+      "name": "C",
+      "ratio": 0.045893778881748566
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "Python"
+    },
+    {
+      "epoch": 2,
+      "lang": "Python"
+    }
+  ],
+  "currentStreak": 0,
+  "maxStreak": 67,
+  "longestGapDays": 307,
+  "gapsOver60d": 14,
+  "weekendRatio": 0.2753749184959791,
+  "potWeeks": [
+    2,
+    2,
+    3,
+    4,
+    3,
+    4,
+    4,
+    4,
+    3,
+    2,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    2,
+    2,
+    2,
+    0,
+    3,
+    3,
+    1,
+    3,
+    4,
+    3,
+    4,
+    1,
+    4,
+    3,
+    3,
+    4,
+    1,
+    4,
+    4,
+    1,
+    2,
+    3,
+    2,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    3,
+    0
+  ],
+  "weeklyCv": 2.5356564296459823,
+  "burstiness": 0.7031080199956531,
+  "repoCount": 54,
+  "topRepoShare": 0.07043240787455891,
+  "flagshipCount": 1,
+  "isOrg": false
+}

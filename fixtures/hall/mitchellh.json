@@ -1,0 +1,107 @@
+{
+  "username": "mitchellh",
+  "createdAt": "2008-02-27T23:27:54Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 60001,
+  "topLanguages": [
+    {
+      "name": "Go",
+      "ratio": 0.24485410598095067
+    },
+    {
+      "name": "C",
+      "ratio": 0.13916689834451826
+    },
+    {
+      "name": "Ruby",
+      "ratio": 0.11900977803050965
+    },
+    {
+      "name": "Zig",
+      "ratio": 0.07931100658396009
+    },
+    {
+      "name": "C++",
+      "ratio": 0.056303018746932255
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "Ruby"
+    },
+    {
+      "epoch": 1,
+      "lang": "Go"
+    },
+    {
+      "epoch": 2,
+      "lang": "C"
+    }
+  ],
+  "currentStreak": 251,
+  "maxStreak": 310,
+  "longestGapDays": 321,
+  "gapsOver60d": 2,
+  "weekendRatio": 0.2253129114514758,
+  "potWeeks": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "weeklyCv": 0.9294104138374967,
+  "burstiness": 0.29701171647139213,
+  "repoCount": 100,
+  "topRepoShare": 0.06158548976805343,
+  "flagshipCount": 1,
+  "isOrg": false
+}

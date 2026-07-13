@@ -1,0 +1,107 @@
+{
+  "username": "gaearon",
+  "createdAt": "2011-05-25T18:18:31Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 77857,
+  "topLanguages": [
+    {
+      "name": "JavaScript",
+      "ratio": 0.63586153965193
+    },
+    {
+      "name": "TypeScript",
+      "ratio": 0.11764059337432624
+    },
+    {
+      "name": "CSS",
+      "ratio": 0.0961915061897535
+    },
+    {
+      "name": "HTML",
+      "ratio": 0.0775021746554298
+    },
+    {
+      "name": "Kotlin",
+      "ratio": 0.015098242476565304
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 2,
+      "lang": "TypeScript"
+    }
+  ],
+  "currentStreak": 0,
+  "maxStreak": 48,
+  "longestGapDays": 344,
+  "gapsOver60d": 5,
+  "weekendRatio": 0.1758351850186881,
+  "potWeeks": [
+    4,
+    2,
+    4,
+    3,
+    3,
+    3,
+    2,
+    4,
+    0,
+    3,
+    4,
+    4,
+    4,
+    0,
+    2,
+    0,
+    3,
+    1,
+    0,
+    2,
+    1,
+    2,
+    4,
+    3,
+    1,
+    4,
+    4,
+    1,
+    3,
+    2,
+    1,
+    2,
+    2,
+    4,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    2,
+    3,
+    4
+  ],
+  "weeklyCv": 2.154103784201026,
+  "burstiness": 0.601975416468654,
+  "repoCount": 60,
+  "topRepoShare": 0.08015247487659248,
+  "flagshipCount": 1,
+  "isOrg": false
+}

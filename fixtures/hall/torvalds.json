@@ -1,0 +1,107 @@
+{
+  "username": "torvalds",
+  "createdAt": "2011-09-03T15:26:22Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 35933,
+  "topLanguages": [
+    {
+      "name": "C",
+      "ratio": 0.3962073002762999
+    },
+    {
+      "name": "Python",
+      "ratio": 0.15748374467389498
+    },
+    {
+      "name": "Assembly",
+      "ratio": 0.09553203539005999
+    },
+    {
+      "name": "Rust",
+      "ratio": 0.09107995789807753
+    },
+    {
+      "name": "Shell",
+      "ratio": 0.0907777557232627
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "C"
+    },
+    {
+      "epoch": 1,
+      "lang": "C"
+    },
+    {
+      "epoch": 2,
+      "lang": "C"
+    }
+  ],
+  "currentStreak": 13,
+  "maxStreak": 98,
+  "longestGapDays": 7,
+  "gapsOver60d": 0,
+  "weekendRatio": 0.2365513594745777,
+  "potWeeks": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4
+  ],
+  "weeklyCv": 0.6637271307929993,
+  "burstiness": 0.2632399187376506,
+  "repoCount": 9,
+  "topRepoShare": 0.5130002020756789,
+  "flagshipCount": 1,
+  "isOrg": false
+}

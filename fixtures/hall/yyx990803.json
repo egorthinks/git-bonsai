@@ -1,0 +1,107 @@
+{
+  "username": "yyx990803",
+  "createdAt": "2010-11-28T01:05:40Z",
+  "fetchedAt": "2026-07-13",
+  "totalContributions": 54560,
+  "topLanguages": [
+    {
+      "name": "JavaScript",
+      "ratio": 0.7182179319675365
+    },
+    {
+      "name": "HTML",
+      "ratio": 0.07343472923774494
+    },
+    {
+      "name": "TypeScript",
+      "ratio": 0.048028312344763256
+    },
+    {
+      "name": "Vue",
+      "ratio": 0.03801335496008147
+    },
+    {
+      "name": "CSS",
+      "ratio": 0.02915042256340599
+    }
+  ],
+  "epochLanguages": [
+    {
+      "epoch": 0,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 1,
+      "lang": "JavaScript"
+    },
+    {
+      "epoch": 2,
+      "lang": "JavaScript"
+    }
+  ],
+  "currentStreak": 13,
+  "maxStreak": 325,
+  "longestGapDays": 203,
+  "gapsOver60d": 4,
+  "weekendRatio": 0.17604472140762464,
+  "potWeeks": [
+    3,
+    3,
+    3,
+    2,
+    2,
+    2,
+    2,
+    3,
+    4,
+    2,
+    3,
+    2,
+    3,
+    2,
+    2,
+    3,
+    2,
+    3,
+    2,
+    2,
+    2,
+    3,
+    2,
+    4,
+    2,
+    2,
+    4,
+    3,
+    4,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    2,
+    2,
+    3,
+    2,
+    2,
+    3,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "weeklyCv": 1.568741760891216,
+  "burstiness": 0.4541055718475073,
+  "repoCount": 75,
+  "topRepoShare": 0.05304423624798433,
+  "flagshipCount": 1,
+  "isOrg": false
+}
