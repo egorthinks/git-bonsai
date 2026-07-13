@@ -21,7 +21,15 @@ const ROSTER = [
   { login: 'sindresorhus', caption: 'Sindre Sorhus — 1000+ npm packages' },
   { login: 'mitchellh', caption: 'Mitchell Hashimoto — Terraform, Vagrant, Ghostty' },
   { login: 'karpathy', caption: 'Andrej Karpathy — deep learning' },
-  { login: 'claude', caption: 'Claude — the gardener itself (co-author of millions of commits)' },
+  { login: 'ry', caption: 'Ryan Dahl — Node.js, Deno' },
+  { login: 'dhh', caption: 'David Heinemeier Hansson — Ruby on Rails' },
+  { login: 'Rich-Harris', caption: 'Rich Harris — Svelte, Rollup' },
+  { login: 'taylorotwell', caption: 'Taylor Otwell — Laravel' },
+  { login: 'fabpot', caption: 'Fabien Potencier — Symfony' },
+  { login: 'mojombo', caption: 'Tom Preston-Werner — GitHub co-founder, Jekyll' },
+  { login: 'tj', caption: 'TJ Holowaychuk — Express, Koa' },
+  { login: 'shadcn', caption: 'shadcn — shadcn/ui' },
+  { login: 'claude', caption: 'Claude — the gardener itself; its real work hides in Co-Authored-By trailers, so the calendar shows a bare literati with honorable scars' },
 ];
 
 const STYLE_JP = {

@@ -23,6 +23,13 @@ inputs:
   season:
     description: 'Leaf palette season: spring/summer/autumn/winter, or "auto" to follow the calendar'
     default: 'auto'
+outputs:
+  style:
+    description: 'The earned bonsai style (chokkan, fukinagashi, sokan, ...)'
+  species:
+    description: 'The tree species picked by the dominant language family'
+  size-class:
+    description: 'Pot size class: shohin, chuhin or dai'
 runs:
   using: 'node20'
   main: 'dist/src/action.js'
