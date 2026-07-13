@@ -1,0 +1,22 @@
+# When a version tag (v1.2.3) is pushed, fast-forward its major tag (v1) to the
+# same commit, so `egorthinks/git-bonsai@v1` always resolves to the latest v1.x.
+name: release
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+permissions:
+  contents: write
+jobs:
+  move-major-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move the major tag to this release
+        env:
+          FULL_TAG: ${{ github.ref_name }}
+        run: |
+          major="${FULL_TAG%%.*}"   # v1.2.3 -> v1
+          git tag -f "$major"       # point it at the checked-out release commit
+          git push origin "$major" --force
+          echo "moved $major -> $FULL_TAG"

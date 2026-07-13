@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: egorthinks/git-bonsai@main
+      - uses: egorthinks/git-bonsai@v1
 ```
 
 Then embed the tree in your `README.md`:
