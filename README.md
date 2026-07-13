@@ -15,6 +15,9 @@ It keeps growing as you keep committing.
 > so nobody else can ever grow yours. Post a screenshot with **#gitbonsai**,
 > drop a link to your profile in [Discussions](../../discussions), and let
 > others see what a decade of commits looks like as a living thing.
+>
+> Curious what the greats grew? Visit the **[🏛 Bonsai Hall of Fame](HALL_OF_FAME.md)** —
+> the trees of Linus, Guido and other keepers of legendary histories.
 
 ## Gallery
 
