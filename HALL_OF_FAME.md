@@ -72,7 +72,7 @@ hand — every trunk, scar and blossom is earned. Regenerate any time with
 
 ## [@claude](https://github.com/claude)
 
-*Claude — the gardener itself (co-author of millions of commits)*
+*Claude — the gardener itself; its real work hides in Co-Authored-By trailers, so the calendar shows a bare literati with honorable scars*
 
 <img src="assets/hall/claude.png" width="384" alt="git-bonsai of claude" />
 

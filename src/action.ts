@@ -27,6 +27,14 @@ async function run(): Promise<void> {
   const metrics = await fetchMetrics(user, token);
   const out = generate(metrics, { season });
 
+  // expose the tree's identity to later workflow steps
+  if (process.env.GITHUB_OUTPUT) {
+    fs.appendFileSync(
+      process.env.GITHUB_OUTPUT,
+      `style=${out.dna.style}\nspecies=${out.dna.species}\nsize-class=${out.dna.sizeClass}\n`,
+    );
+  }
+
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'bonsai.svg'), out.svg);
   fs.writeFileSync(path.join(outDir, 'bonsai.png'), out.png);
@@ -56,6 +64,26 @@ async function run(): Promise<void> {
     }
   }
   console.log('bonsai committed and pushed');
+
+  // job summary: show the tree and make sharing one click
+  if (process.env.GITHUB_STEP_SUMMARY && process.env.GITHUB_REPOSITORY) {
+    const repo = process.env.GITHUB_REPOSITORY;
+    const branch = process.env.GITHUB_REF_NAME ?? 'main';
+    const img = `https://github.com/${repo}/raw/${branch}/${outDir}/bonsai.png`;
+    const text = encodeURIComponent(
+      `My GitHub history grew a ${out.dna.style} ${out.dna.species} bonsai 🌳 #gitbonsai\n` +
+      `https://github.com/${repo}`,
+    );
+    fs.appendFileSync(
+      process.env.GITHUB_STEP_SUMMARY,
+      `## 🌳 Your bonsai has been tended\n\n` +
+      `<img src="${img}" width="384" alt="git-bonsai of ${user}" />\n\n` +
+      `**${out.dna.style}** · ${out.dna.species} · ${out.dna.sizeClass} pot` +
+      `${out.dna.sumo ? ' · **sumo trunk**' : ''}${out.dna.flowers > 0 ? ` · ${out.dna.flowers} 🌸` : ''}\n\n` +
+      `[Share on X](https://twitter.com/intent/tweet?text=${text}) · ` +
+      `[grow your own](https://github.com/egorthinks/git-bonsai)\n`,
+    );
+  }
 }
 
 run().catch((err) => {
