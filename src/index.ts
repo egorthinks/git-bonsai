@@ -4,6 +4,7 @@ import { deriveDna } from './dna';
 import { buildSkeleton, Skeleton } from './skeleton';
 import { applyThickness } from './thickness';
 import { renderFrame } from './render';
+import { Frame, fitBox, cropFrame } from './raster';
 import { windFrames, growthFrames } from './animate';
 import { buildPalette, seasonFromDate } from './palette';
 import { frameToSvg, frameToPng, framesToGif } from './encode';
@@ -55,11 +56,18 @@ export function generate(metrics: Metrics, opts: GenerateOptions = {}): BonsaiOu
   const wind = windFrames(dna, skel, opts.windFrameCount ?? 24);
   const growth = growthFrames(dna, skel, opts.growthFrameCount ?? 44);
 
+  // adaptive box: crop the fixed stage to the tree's real extent so a small
+  // bonsai ships in a small image instead of swimming in empty air. One box
+  // for all outputs, measured across every frame (wind sway, falling petals),
+  // so nothing ever pokes outside and all four files share the same framing.
+  const box = fitBox([still, ...wind.frames, ...growth.frames]);
+  const crop = (f: Frame) => cropFrame(f, box);
+
   return {
-    svg: frameToSvg(still, palette, scale),
-    png: frameToPng(still, palette, scale),
-    gif: framesToGif(wind, palette),
-    growthGif: framesToGif(growth, palette),
+    svg: frameToSvg(crop(still), palette, scale),
+    png: frameToPng(crop(still), palette, scale),
+    gif: framesToGif({ frames: wind.frames.map(crop), delays: wind.delays }, palette),
+    growthGif: framesToGif({ frames: growth.frames.map(crop), delays: growth.delays }, palette),
     dna,
   };
 }
