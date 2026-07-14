@@ -34,6 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchMetrics = fetchMetrics;
+exports.normalize = normalize;
 exports.loadFixture = loadFixture;
 exports.synthMetrics = synthMetrics;
 const fs = __importStar(require("fs"));
@@ -168,6 +169,11 @@ async function fetchOrgMetrics(login, token, now) {
     metrics.totalContributions = Math.max(metrics.totalContributions, totalCommits);
     return metrics;
 }
+/**
+ * Turn a raw daily series + repo list into Metrics. Exported so alternative
+ * data sources (the browser playground's public-API path) share the exact
+ * same normalization as the GraphQL fetcher — same data in, same tree out.
+ */
 function normalize(username, createdAt, now, days, repos, isOrg = false) {
     const totalContributions = days.reduce((s, d) => s + d.count, 0);
     // streaks and gaps from the daily series
