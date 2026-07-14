@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>git-bonsai playground 🌳</title>
+<meta name="description" content="Type a GitHub username and watch its one-of-a-kind pixel-art bonsai grow — deterministic, procedural, no install." />
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --line: #30363d;
+    --text: #e6edf3; --dim: #8b949e; --green: #3fb950; --red: #f85149;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh; padding: 24px 16px;
+  }
+  h1 { font-size: 22px; margin: 8px 0 2px; font-weight: 600; }
+  h1 a { color: var(--text); text-decoration: none; }
+  .tagline { color: var(--dim); margin: 0 0 20px; text-align: center; }
+  form { display: flex; gap: 8px; width: 100%; max-width: 460px; }
+  input[type=text] {
+    flex: 1; padding: 10px 12px; border-radius: 6px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--text);
+    font: inherit; outline: none;
+  }
+  input[type=text]:focus { border-color: var(--green); }
+  button {
+    padding: 10px 16px; border-radius: 6px; border: 1px solid var(--line);
+    background: #238636; color: #fff; font: inherit; cursor: pointer;
+  }
+  button:hover { background: #2ea043; }
+  .demo-row { color: var(--dim); font-size: 13px; margin: 8px 0 0; }
+  .demo-row input { accent-color: var(--green); }
+  .try { color: var(--dim); font-size: 13px; margin: 6px 0 0; }
+  .try a { color: var(--green); text-decoration: none; }
+  .status { color: var(--dim); font-size: 13px; margin: 14px 0 0; text-align: center; max-width: 560px; }
+  .status.error { color: var(--red); }
+  #tree {
+    margin-top: 18px; width: min(84vw, 460px); height: auto;
+    image-rendering: pixelated;
+  }
+  #stats { margin: 6px 0 0; text-align: center; color: var(--dim); max-width: 560px; }
+  #stats b { color: var(--text); }
+  #seasons { display: flex; gap: 6px; margin-top: 14px; }
+  #seasons button, #downloads button {
+    background: var(--panel); color: var(--dim); border: 1px solid var(--line);
+    padding: 6px 12px; font-size: 13px;
+  }
+  #seasons button.on, #seasons button:hover, #downloads button:hover { color: var(--text); border-color: var(--green); background: var(--panel); }
+  #downloads { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+  .hidden { display: none !important; }
+  footer {
+    margin-top: auto; padding-top: 28px; color: var(--dim); font-size: 13px; text-align: center;
+  }
+  footer a { color: var(--green); text-decoration: none; }
+  footer code {
+    display: inline-block; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 6px; padding: 2px 8px; margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+<h1><a href="https://github.com/egorthinks/git-bonsai">🌳 git-bonsai</a> playground</h1>
+<p class="tagline">every GitHub account grows exactly one tree — type a name and meet it</p>
+
+<form id="form">
+  <input id="login" type="text" placeholder="github username" autocomplete="off" spellcheck="false" autofocus />
+  <button type="submit">grow</button>
+</form>
+<p class="demo-row"><label><input id="demo" type="checkbox" /> demo mode (no API — fabricate a history for this name)</label></p>
+<p class="try">try:
+  <a href="?u=torvalds">torvalds</a> ·
+  <a href="?u=gaearon">gaearon</a> ·
+  <a href="?u=sindresorhus">sindresorhus</a> ·
+  <a href="?u=karpathy">karpathy</a>
+</p>
+
+<p id="status" class="status"></p>
+<canvas id="tree" width="256" height="256"></canvas>
+<p id="stats" class="hidden"></p>
+
+<div id="seasons">
+  <button data-season="auto" class="on">auto</button>
+  <button data-season="spring">spring</button>
+  <button data-season="summer">summer</button>
+  <button data-season="autumn">autumn</button>
+  <button data-season="winter">winter</button>
+</div>
+
+<div id="downloads" class="hidden">
+  <button id="dl-png">download PNG</button>
+  <button id="dl-gif">download GIF</button>
+  <button id="share-x">share on X</button>
+</div>
+
+<footer>
+  grow it on your profile — it re-grows daily and never forgets a streak:<br />
+  <code>- uses: egorthinks/git-bonsai@v1</code><br /><br />
+  <a href="https://github.com/egorthinks/git-bonsai">install</a> ·
+  <a href="https://github.com/egorthinks/git-bonsai/blob/main/HALL_OF_FAME.md">🏛 hall of fame</a> ·
+  <a href="https://github.com/egorthinks/git-bonsai/blob/main/ROADMAP.md">how trees are earned</a>
+</footer>
+
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

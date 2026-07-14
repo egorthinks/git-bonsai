@@ -160,7 +160,12 @@ async function fetchOrgMetrics(login: string, token: string, now: Date): Promise
   return metrics;
 }
 
-function normalize(
+/**
+ * Turn a raw daily series + repo list into Metrics. Exported so alternative
+ * data sources (the browser playground's public-API path) share the exact
+ * same normalization as the GraphQL fetcher — same data in, same tree out.
+ */
+export function normalize(
   username: string,
   createdAt: string,
   now: Date,

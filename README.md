@@ -10,6 +10,12 @@ Every account grows exactly one tree — deterministic, procedural, 16-bit style
 The older your account and the richer your history, the bigger and denser your bonsai.
 It keeps growing as you keep committing.
 
+> ### 🎮 Try it right now — no install
+> Type any username into the **[playground](https://egorthinks.github.io/git-bonsai/)**
+> and meet its tree in your browser: it grows from seed before your eyes,
+> sways in the wind, changes with the seasons, and you can download the
+> PNG/GIF on the spot. Public data only — the Action sees more.
+
 > ### 🌸 Share your bonsai!
 > Every tree is unique — your username is its seed and your history is its shape,
 > so nobody else can ever grow yours. Post a screenshot with **#gitbonsai**,
@@ -204,7 +210,10 @@ npm run demo      # render fixtures/veteran.json into out/
 
 `dist/` is committed intentionally — the GitHub Action runs straight from it
 without an install step. `node scripts/render-assets.js` regenerates every
-image in `assets/` from the fixtures. See [ROADMAP.md](ROADMAP.md) for the
+image in `assets/` from the fixtures. `node scripts/build-playground.js`
+rebundles the engine for the browser [playground](https://egorthinks.github.io/git-bonsai/)
+(`docs/`, served by GitHub Pages) — same code, so the same account grows the
+same tree everywhere. See [ROADMAP.md](ROADMAP.md) for the
 design notes behind the growth rules.
 
 ## License
