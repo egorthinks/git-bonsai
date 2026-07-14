@@ -1,0 +1,5 @@
+{
+  "name": "git-bonsai-api",
+  "private": true,
+  "description": "CORS-open contribution-calendar endpoint for the git-bonsai playground (deployed on Vercel)"
+}
