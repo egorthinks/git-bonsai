@@ -46,6 +46,81 @@ async function getJson(url, what) {
   return res.json();
 }
 
+// The public contribution calendar has no official CORS endpoint, so we walk
+// a chain of independent sources until one works. The last one parses
+// GitHub's own calendar HTML through a CORS passthrough — slowest, but it
+// only dies if GitHub does.
+const CALENDAR_SOURCES = [
+  {
+    label: 'jogruber.de',
+    async fetch(login) {
+      const data = await getJson(
+        'https://github-contributions-api.jogruber.de/v4/' + encodeURIComponent(login) + '?y=all',
+        'jogruber.de');
+      return data.contributions.map((d) => ({ date: d.date, count: d.count }));
+    },
+  },
+  {
+    label: 'github-contributions.vercel.app',
+    async fetch(login) {
+      const data = await getJson(
+        'https://github-contributions.vercel.app/api/v1/' + encodeURIComponent(login),
+        'github-contributions.vercel.app');
+      return data.contributions.map((d) => ({ date: d.date, count: Number(d.count) || 0 }));
+    },
+  },
+  {
+    label: "GitHub's own calendar",
+    async fetch(login, sinceYear) {
+      const perDay = new Map();
+      const thisYear = new Date().getUTCFullYear();
+      for (let y = sinceYear; y <= thisYear; y++) {
+        setStatus(`reading GitHub's calendar year by year ... ${y}`, false);
+        const target = `https://github.com/users/${encodeURIComponent(login)}/contributions?from=${y}-01-01&to=${y}-12-31`;
+        const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(target));
+        if (!res.ok) throw new Error(`year ${y} answered HTTP ${res.status}`);
+        for (const [date, count] of parseCalendarHtml(await res.text())) perDay.set(date, count);
+      }
+      return [...perDay.entries()].map(([date, count]) => ({ date, count }));
+    },
+  },
+];
+
+/** GitHub renders the calendar as <td data-date> cells + <tool-tip> texts
+ *  ("3 contributions on ..."); data-level (0..4) is the fallback if the
+ *  tooltip markup ever changes. */
+function parseCalendarHtml(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const tips = new Map();
+  doc.querySelectorAll('tool-tip[for]').forEach((t) => tips.set(t.getAttribute('for'), t.textContent.trim()));
+  const out = [];
+  doc.querySelectorAll('td[data-date]').forEach((td) => {
+    const tip = tips.get(td.id) ?? '';
+    const m = tip.match(/^([\d,]+)\s+contribution/);
+    const count = m ? parseInt(m[1].replace(/,/g, ''), 10)
+      : /^no\s/i.test(tip) ? 0
+      : parseInt(td.getAttribute('data-level') ?? '0', 10);
+    out.push([td.getAttribute('data-date'), count]);
+  });
+  if (out.length === 0) throw new Error('calendar markup not recognized');
+  return out;
+}
+
+async function fetchCalendar(login, sinceYear) {
+  const failures = [];
+  for (const src of CALENDAR_SOURCES) {
+    try {
+      setStatus(`reading the contribution calendar (${src.label}) ...`, false);
+      return await src.fetch(login, sinceYear);
+    } catch (err) {
+      console.warn(`calendar source failed: ${src.label}`, err);
+      failures.push(`${src.label}: ${err.message}`);
+    }
+  }
+  throw new Error('every contribution-calendar source failed — ' + failures.join(' · ') +
+    '. Try again later, use demo mode, or install the Action (it talks to the API directly).');
+}
+
 async function fetchPublicMetrics(login) {
   const user = await getJson('https://api.github.com/users/' + encodeURIComponent(login), 'GitHub')
     .catch((e) => {
@@ -56,21 +131,18 @@ async function fetchPublicMetrics(login) {
     throw new Error('organizations have no public contribution calendar — ' +
       'run the GitHub Action for orgs (it grows a yose-ue forest from repo history)');
   }
-  const [contrib, repos] = await Promise.all([
-    getJson('https://github-contributions-api.jogruber.de/v4/' + encodeURIComponent(login) + '?y=all',
-      'the contributions API'),
-    getJson('https://api.github.com/users/' + encodeURIComponent(login) + '/repos?per_page=100&sort=pushed',
-      'GitHub'),
-  ]);
-
   const today = new Date();
   const todayIso = today.toISOString().slice(0, 10);
   const createdDay = user.created_at.slice(0, 10);
-  const days = contrib.contributions
+  const [calendar, repos] = await Promise.all([
+    fetchCalendar(login, new Date(user.created_at).getUTCFullYear()),
+    getJson('https://api.github.com/users/' + encodeURIComponent(login) + '/repos?per_page=100&sort=pushed',
+      'GitHub'),
+  ]);
+  const days = calendar
     .filter((d) => d.date >= createdDay && d.date <= todayIso)
-    .sort((a, b) => (a.date < b.date ? -1 : 1))
-    .map((d) => ({ date: d.date, count: d.count }));
-  if (days.length === 0) throw new Error('the contributions API returned an empty calendar');
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
+  if (days.length === 0) throw new Error('the contribution calendar came back empty');
 
   // REST gives one primary language + repo size (KB); close enough to the
   // GraphQL per-language byte sizes once log-damped by normalize()
