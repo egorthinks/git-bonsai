@@ -50,7 +50,20 @@ async function getJson(url, what) {
 // a chain of independent sources until one works. The last one parses
 // GitHub's own calendar HTML through a CORS passthrough — slowest, but it
 // only dies if GitHub does.
+// Our own endpoint (playground-api/, deployable on any Vercel account in a
+// minute). When set, it goes first: one cached request instead of mirrors
+// and passthrough walks. Leave '' to rely on the public chain below.
+const OWN_API = '';
+
 const CALENDAR_SOURCES = [
+  ...(OWN_API ? [{
+    label: 'git-bonsai api',
+    async fetch(login, sinceYear) {
+      const data = await getJson(
+        `${OWN_API}/api/calendar?u=${encodeURIComponent(login)}&since=${sinceYear}`, 'git-bonsai api');
+      return data.contributions;
+    },
+  }] : []),
   {
     label: 'jogruber.de',
     async fetch(login) {
@@ -75,16 +88,39 @@ const CALENDAR_SOURCES = [
       const perDay = new Map();
       const thisYear = new Date().getUTCFullYear();
       for (let y = sinceYear; y <= thisYear; y++) {
-        setStatus(`reading GitHub's calendar year by year ... ${y}`, false);
-        const target = `https://github.com/users/${encodeURIComponent(login)}/contributions?from=${y}-01-01&to=${y}-12-31`;
-        const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(target));
-        if (!res.ok) throw new Error(`year ${y} answered HTTP ${res.status}`);
-        for (const [date, count] of parseCalendarHtml(await res.text())) perDay.set(date, count);
+        setStatus(`reading GitHub's calendar year by year ... ${y} of ${thisYear} (slow but sure)`, false);
+        for (const [date, count] of await fetchYearViaPassthrough(login, y)) perDay.set(date, count);
+        await sleep(300); // pace the free passthroughs — they throttle bursts
       }
       return [...perDay.entries()].map(([date, count]) => ({ date, count }));
     },
   },
 ];
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// free CORS passthroughs, rotated per attempt — each rate-limits differently
+const PASSTHROUGHS = [
+  (u) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+  (u) => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u),
+  (u) => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
+];
+
+async function fetchYearViaPassthrough(login, year) {
+  const target = `https://github.com/users/${encodeURIComponent(login)}/contributions?from=${year}-01-01&to=${year}-12-31`;
+  let lastErr;
+  for (let attempt = 0; attempt < PASSTHROUGHS.length; attempt++) {
+    try {
+      const res = await fetch(PASSTHROUGHS[attempt](target));
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return parseCalendarHtml(await res.text()); // throws on throttle pages too
+    } catch (err) {
+      lastErr = err;
+      await sleep(700 * (attempt + 1));
+    }
+  }
+  throw new Error(`year ${year}: ${lastErr.message}`);
+}
 
 /** GitHub renders the calendar as <td data-date> cells + <tool-tip> texts
  *  ("3 contributions on ..."); data-level (0..4) is the fallback if the
@@ -107,11 +143,22 @@ function parseCalendarHtml(html) {
 }
 
 async function fetchCalendar(login, sinceYear) {
+  // a full calendar is worth caching: the slow last-resort walk shouldn't
+  // run twice in one day for the same name on the same browser
+  const cacheKey = 'gitbonsai:cal:' + login.toLowerCase();
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const hit = JSON.parse(localStorage.getItem(cacheKey) ?? 'null');
+    if (hit && hit.day === today) return hit.contributions;
+  } catch { /* corrupt cache: refetch */ }
+
   const failures = [];
   for (const src of CALENDAR_SOURCES) {
     try {
       setStatus(`reading the contribution calendar (${src.label}) ...`, false);
-      return await src.fetch(login, sinceYear);
+      const contributions = await src.fetch(login, sinceYear);
+      try { localStorage.setItem(cacheKey, JSON.stringify({ day: today, contributions })); } catch { /* full/blocked */ }
+      return contributions;
     } catch (err) {
       console.warn(`calendar source failed: ${src.label}`, err);
       failures.push(`${src.label}: ${err.message}`);
