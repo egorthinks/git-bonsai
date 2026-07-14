@@ -50,10 +50,10 @@ async function getJson(url, what) {
 // a chain of independent sources until one works. The last one parses
 // GitHub's own calendar HTML through a CORS passthrough — slowest, but it
 // only dies if GitHub does.
-// Our own endpoint (playground-api/, deployable on any Vercel account in a
-// minute). When set, it goes first: one cached request instead of mirrors
-// and passthrough walks. Leave '' to rely on the public chain below.
-const OWN_API = '';
+// Our own endpoint (playground-api/, deployed on Vercel). It goes first: one
+// cached request for the whole calendar instead of flaky community mirrors
+// and slow passthrough walks. The public chain below stays as the backup.
+const OWN_API = 'https://git-bonsai-api.vercel.app';
 
 const CALENDAR_SOURCES = [
   ...(OWN_API ? [{
