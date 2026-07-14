@@ -55,6 +55,9 @@ async function getJson(url, what) {
 // and slow passthrough walks. The public chain below stays as the backup.
 const OWN_API = 'https://git-bonsai-api.vercel.app';
 
+// which data path produced the last tree — drives the status note
+let metricsSource = 'public';
+
 const CALENDAR_SOURCES = [
   ...(OWN_API ? [{
     label: 'git-bonsai api',
@@ -166,6 +169,31 @@ async function fetchCalendar(login, sinceYear) {
   }
   throw new Error('every contribution-calendar source failed — ' + failures.join(' · ') +
     '. Try again later, use demo mode, or install the Action (it talks to the API directly).');
+}
+
+/**
+ * Preferred path: our tokened endpoint runs the Action's own fetchMetrics and
+ * returns the full Metrics — real calendar, real language bytes, no anonymous
+ * rate limit, so the browser tree == the Action tree. If it's unconfigured
+ * (503) or unreachable, fall through to the public browser path below. A 404
+ * is a real "no such user" and is surfaced.
+ */
+async function fetchMetrics(login) {
+  if (OWN_API) {
+    let res;
+    try {
+      setStatus(`reading @${login}'s history ...`, false);
+      res = await fetch(`${OWN_API}/api/metrics?u=${encodeURIComponent(login)}`);
+    } catch { /* endpoint down: use the public path */ }
+    if (res) {
+      if (res.ok) { metricsSource = 'endpoint'; return res.json(); }
+      if (res.status === 404) throw new Error(`no GitHub account named "${login}"`);
+      // 503 (no token) / 5xx: silently degrade to the public path
+      console.warn(`/api/metrics returned HTTP ${res.status}; using public path`);
+    }
+  }
+  metricsSource = 'public';
+  return fetchPublicMetrics(login);
 }
 
 async function fetchPublicMetrics(login) {
@@ -323,14 +351,16 @@ async function run(login, demo) {
   $('stats').classList.add('hidden');
   setStatus(demo ? `dreaming up a demo ${login} ...` : `reading @${login}'s history ...`, false);
   try {
-    const metrics = demo ? Bonsai.synthMetrics(login) : await fetchPublicMetrics(login);
+    const metrics = demo ? Bonsai.synthMetrics(login) : await fetchMetrics(login);
     const url = new URL(location.href);
     url.searchParams.set('u', login);
     if (demo) url.searchParams.set('demo', '1'); else url.searchParams.delete('demo');
     history.replaceState(null, '', url);
     setStatus(demo
       ? 'demo mode: fabricated history, deterministic for this name'
-      : 'public data only — private contributions and language bytes need the Action', false);
+      : metricsSource === 'endpoint'
+        ? 'grown from your full public history — the same data the Action uses (private contributions still need the Action)'
+        : 'public data only — languages are approximated here; the Action sees your exact language bytes and private work', false);
     await grow(metrics);
   } catch (err) {
     setStatus(String(err.message ?? err), true);
