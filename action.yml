@@ -31,5 +31,5 @@ outputs:
   size-class:
     description: 'Pot size class: shohin, chuhin or dai'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/src/action.js'

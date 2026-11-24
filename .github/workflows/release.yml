@@ -11,7 +11,7 @@ jobs:
   move-major-tag:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Move the major tag to this release
         env:
           FULL_TAG: ${{ github.ref_name }}
